@@ -1,0 +1,32 @@
+{
+  "name": "jam-engine-example",
+  "version": "0.0.0",
+  "description": "Jam engine example",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coxm/jam-engine-example"
+  },
+  "main": "build/js/game/index.js",
+  "scripts": {
+    "start": "http-server -a localhost",
+    "test": "make test"
+  },
+  "dependencies": {
+    "jam": "bitbucket:mcox136/jam-engine#v15.0.0",
+    "p2": "^0.7.1",
+    "pixi.js": "4.4.0",
+    "systemjs": "^0.19.37",
+    "systemjs-plugin-json": "^0.3.0",
+    "systemjs-plugin-text": "0.0.9"
+  },
+  "devDependencies": {
+    "@types/pixi.js": "^4.4.0",
+    "@types/systemjs": "^0.19.31",
+    "check-dependencies": "^1.0.1",
+    "http-server": "^0.10.0",
+    "typescript": "^2.4.0",
+    "typings": "^1.4.0"
+  },
+  "author": "coxm",
+  "license": "GPL-3.0"
+}

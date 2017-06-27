@@ -1,0 +1,39 @@
+{
+	"compilerOptions": {
+		"baseUrl": "..",
+		"outDir": "../build/js/game",
+		"target": "es2015",
+		"lib": ["es2015", "es7", "dom"],
+		"module": "system",
+		"moduleResolution": "node",
+		"sourceMap": false,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"forceConsistentCasingInFileNames": true,
+		"noFallthroughCasesInSwitch": false,
+		"noImplicitAny": true,
+		"noImplicitThis": true,
+		"noImplicitUseStrict": true,
+		"noUnusedLocals": true,
+		"strictNullChecks": true,
+		"noImplicitReturns": true,
+		"noEmitOnError": true,
+		"module": "system",
+		"newLine": "LF",
+		"pretty": true,
+		"removeComments": false,
+		"preserveConstEnums": true,
+		"declaration": true,
+		"paths": {
+			"game/*": ["src/*"],
+			"jam/*": ["build/js/jam/*"]
+		}
+	},
+	"include": [
+	],
+	"files": [
+		"../node_modules/jam/defs/lib.d.ts",
+		"../node_modules/jam/defs/p2.d.ts",
+		"../src/index.ts"
+	]
+}
