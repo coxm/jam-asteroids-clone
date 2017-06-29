@@ -53,7 +53,8 @@ export const factory = new Factory<Actor>();
 // Define actor component factories here.
 factory.setCmpFactories({
 	animated: createAnimatedSprite,
-	physics: (def: PhysicsDef, actorID: symbol) => new Physics(def, actorID),
+	physics: (def: PhysicsDef, actorID: symbol, aDef: jamActors.ActorDef) =>
+		new Physics(def, actorID, aDef),
 	inputDriver: (def: InputDriverDef, actorID: symbol) =>
 		new InputDriver(def, actorID),
 	asteroidDriver: (def: AsteroidDriverDef, actorID: symbol) =>

@@ -8,8 +8,11 @@ export interface MenuPreloadData {
 }
 
 
-const startGame = (): void => {
-	states.manager.trigger(states.Trigger.play);
+const play1P = (): void => {
+	states.manager.trigger(states.Trigger.play1P);
+};
+const play2P = (): void => {
+	states.manager.trigger(states.Trigger.play2P);
 };
 
 
@@ -25,10 +28,10 @@ export class MainMenu extends State {
 				.importNode(template.content, true)
 				.getElementById('main-menu-container')
 		) as HTMLElement;
-		this.element.querySelector('.btn-start-game')!.addEventListener(
-			'click',
-			startGame
-		);
+		this.element.querySelector('#btn-1p')!.addEventListener(
+			'click', play1P);
+		this.element.querySelector('#btn-2p')!.addEventListener(
+			'click', play2P);
 	}
 
 	protected doStart(data: MenuPreloadData): void {

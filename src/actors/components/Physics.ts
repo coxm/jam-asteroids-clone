@@ -63,7 +63,7 @@ export interface PhysicsDef extends actors.ComponentDef {
 export class Physics extends actors.ComponentBase {
 	readonly body: p2.Body;
 
-	constructor(def: PhysicsDef, actorID: symbol) {
+	constructor(def: PhysicsDef, actorID: symbol, actorDef: actors.ActorDef) {
 		super(actorID);
 		const bodyType = BODY_TYPES[def.body.type!];
 		if (bodyType === undefined) {
@@ -72,6 +72,9 @@ export class Physics extends actors.ComponentBase {
 		this.body = new p2.Body(Object.assign({}, def.body, {
 			type: bodyType,
 		}));
+		if (actorDef.position) {
+			this.body.position.set(actorDef.position);
+		}
 		for (let shapeDef of def.shapes) {
 			const Constructor = shapeConstructor(shapeDef.type!);
 			const shape = new Constructor(shapeDef);

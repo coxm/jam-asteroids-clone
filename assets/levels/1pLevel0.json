@@ -1,7 +1,8 @@
 {
-	"title": "Level_0",
+	"title": "Level_0 (1 player)",
 	"actors": [
 		{
+			"alias": "Player",
 			"depends": "Player",
 			"position": [0, 0]
 		},

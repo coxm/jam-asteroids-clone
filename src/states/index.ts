@@ -4,6 +4,7 @@ import {Relation} from 'jam/states/Relation';
 import {Manager, TriggerEvent} from 'jam/states/Manager';
 
 import {Level} from './Level';
+import {Splash} from './Splash';
 import {MainMenu} from './MainMenu';
 
 
@@ -14,7 +15,8 @@ import {MainMenu} from './MainMenu';
  * trigger configuration.
  */
 export const enum Trigger {
-	play,
+	play1P,
+	play2P,
 	success,
 	failure,
 }
@@ -46,9 +48,7 @@ export const manager = new Manager<State, Trigger>({
 const advanceOnSuccess = {
 	trigger: Trigger.success,
 	exit: (state: State): void => state.destroy(),
-	// Using `Relation.siblingElseUp` indicates that when the final level is
-	// complete, the state manager reverts to the parent state (i.e. MainMenu).
-	rel: Relation.siblingElseUp,
+	rel: Relation.sibling,
 };
 /** State transition: restart the current level on 'failure'. */
 const restartOnFailure = {
@@ -56,30 +56,53 @@ const restartOnFailure = {
 	exit: reset,
 	rel: Relation.same,
 };
-/** State transition: start the first child state on 'play'. */
-const startFirstChild = {
-	trigger: Trigger.play,
+/** State transition: start the first 1p mission. */
+const start1pMissionsOnSelect = {
+	trigger: Trigger.play1P,
 	exit: (state: State): void => state.detach(),
-	rel: Relation.child,
+	id: '1pLevel0',
+};
+/** State transition: start the first 2p mission. */
+const start2pMissionsOnSelect = {
+	trigger: Trigger.play2P,
+	exit: (state: State): void => state.detach(),
+	id: '2pLevel0',
 };
 
 
 // Configure our state tree:
 // MainMenu (root state)
-//   |-- Level_0
-//   |-- Level_1
+//   |-- 1pMissions
+//   |   |-- 1pLevel0
+//   |   |-- GameComplete
+//   |-- 2pMissions
+//       |-- 2pLevel0
+//       |-- GameComplete
+const gameComplete = new Splash('GameComplete', 'GameComplete.png');
 const mainMenuID = manager.add(new MainMenu('MainMenu'), {
 	alias: 'MainMenu',
 	children: [
-		manager.add(new Level('Level_0'), {
-			alias: 'Level_0',
-			transitions: [advanceOnSuccess, restartOnFailure],
+		manager.add(new State('1pMissions'), {
+			alias: '1pMissions',
+			children: [
+				manager.add(new Level('1pLevel0'), {
+					alias: '1pLevel0',
+					transitions: [advanceOnSuccess, restartOnFailure],
+				}),
+				gameComplete,
+			],
 		}),
-		manager.add(new Level('Level_1'), {
-			alias: 'Level_1',
-			transitions: [advanceOnSuccess, restartOnFailure],
+		manager.add(new State('2pMissions'), {
+			alias: '2pMissions',
+			children: [
+				manager.add(new Level('2pLevel0'), {
+					alias: '2pLevel0',
+					transitions: [advanceOnSuccess, restartOnFailure],
+				}),
+				gameComplete,
+			],
 		}),
 	],
-	transitions: [startFirstChild],
+	transitions: [start1pMissionsOnSelect, start2pMissionsOnSelect],
 });
 manager.set(mainMenuID);  // Set the initial state.

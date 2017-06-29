@@ -1,6 +1,4 @@
 {
-	"alias": "Player",
-	"depends": "Entity",
 	"cmp": [
 		{
 			"factory": "physics",

@@ -1,0 +1,23 @@
+{
+	"title": "Level_0 (2 players)",
+	"actors": [
+		{
+			"alias": "Player1",
+			"depends": "Player",
+			"position": [40, 40]
+		},
+		{
+			"alias": "Player2",
+			"depends": "Player",
+			"position": [-40, 40]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [0, 40]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [0, -40]
+		}
+	]
+}
