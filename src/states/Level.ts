@@ -71,11 +71,12 @@ export class Level extends State {
 		this.updateLoop = loop({
 			fn(msNow: number, msSinceLast: number): void {
 				world.step(UPDATE_LOOP_FREQUENCY_SECONDS);
-				for (let {cmp: {phys: {body}, anim}} of actors.values()) {
-					const position = body.position;
+				for (let {cmp} of actors.values()) {
+					const position = cmp.phys.body.position;
 					wrapPosition(position);
-					anim.renderable.position.set(position[0], position[1]);
-					anim.renderable.rotation = body.angle;
+					cmp.anim.renderable.position.set(position[0], position[1]);
+					cmp.anim.renderable.rotation = cmp.phys.body.angle;
+					cmp.driver && cmp.driver.update && cmp.driver.update();
 				}
 			},
 			ms: UPDATE_LOOP_FREQUENCY_SECONDS * 1000,

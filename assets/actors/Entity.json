@@ -1,20 +1,4 @@
 {
 	"cmp": [
-		{
-			"factory": "physics",
-			"body": {
-				"type": "DYNAMIC",
-				"mass": 1,
-				"damping": 0.1
-			},
-			"shapes": [
-				{
-					"type": "CIRCLE",
-					"radius": 10,
-					"collisionGroup": "players",
-					"collisionMask": "all"
-				}
-			]
-		}
 	]
 }

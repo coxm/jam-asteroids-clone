@@ -13,6 +13,12 @@ import {
 	Animated,
 	create as createAnimatedSprite
 } from 'game/actors/components/animated';
+import {
+	AsteroidDriver,
+	AsteroidDriverDef,
+} from 'game/actors/components/AsteroidDriver';
+import {InputDriver, InputDriverDef} from 'game/actors/components/InputDriver';
+import {KeyboardControl, Driver} from 'game/actors/components/KeyboardControl';
 
 
 /** Components held by an actor. */
@@ -20,6 +26,8 @@ export interface ActorComponents {
 	readonly [key: string]: jamActors.Component;
 	readonly phys: Physics;
 	readonly anim: Animated;
+	readonly driver: Driver & jamActors.Component;
+	readonly input: KeyboardControl;  // Caution: optional!
 }
 
 
@@ -28,6 +36,9 @@ export interface ActorComponents {
 // key, allowing multiple components of the same type to be used.
 Physics.prototype.key = 'phys';
 Animated.prototype.key = 'anim';
+InputDriver.prototype.key = AsteroidDriver.prototype.key = 'driver';
+KeyboardControl.prototype.key = 'input';
+
 
 
 /** Complete interface for actors in this game. */
@@ -43,4 +54,10 @@ export const factory = new Factory<Actor>();
 factory.setCmpFactories({
 	animated: createAnimatedSprite,
 	physics: (def: PhysicsDef, actorID: symbol) => new Physics(def, actorID),
+	inputDriver: (def: InputDriverDef, actorID: symbol) =>
+		new InputDriver(def, actorID),
+	asteroidDriver: (def: AsteroidDriverDef, actorID: symbol) =>
+		new AsteroidDriver(def, actorID),
+	input: (def: jamActors.ComponentDef, actorID: symbol) =>
+		new KeyboardControl(actorID),
 });
