@@ -1,4 +1,4 @@
-import * as events from 'jam/events/Manager';
+import * as jamEvents from 'jam/events/Manager';
 
 
 /**
@@ -7,6 +7,7 @@ import * as events from 'jam/events/Manager';
  * Insert new categories here to define new event types.
  */
 export const enum Category {
+	actorHit,
 }
 
 
@@ -15,8 +16,11 @@ export type EventData = any;
 
 
 /** The type of event emitted by the event manager. */
-export type Event = events.Event<Category, EventData>;
+export type Event = jamEvents.Event<Category, EventData>;
+
+
+export type Manager = jamEvents.Manager<Category, EventData>;
 
 
 /** The event manager. */
-export manager: Manager = new events.Manager<Category, EventData>();
+export const manager: Manager = new jamEvents.Manager();

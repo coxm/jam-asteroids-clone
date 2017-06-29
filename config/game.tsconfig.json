@@ -23,7 +23,7 @@
 		"pretty": true,
 		"removeComments": false,
 		"preserveConstEnums": true,
-		"declaration": true,
+		"declaration": false,
 		"paths": {
 			"game/*": ["src/*"],
 			"jam/*": ["build/js/jam/*"]

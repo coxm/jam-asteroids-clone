@@ -28,4 +28,4 @@ export const renderOnce = (): void => {
 };
 
 
-export const loop: RenderLoop = renderLoop(() => renderOnce);
+export const loop: RenderLoop = renderLoop(renderOnce);

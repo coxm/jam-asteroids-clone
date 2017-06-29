@@ -1,26 +1,37 @@
-import * as actors from 'jam/actors/Actor';
 import {Factory} from 'jam/actors/Factory';
-import {Animated, AnimatedDef} from 'jam/actors/cmp/Animated';
+import * as jamActors from 'jam/actors/Actor';
+export { // Re-export types from here, so we can modify if required in future.
+	Component,
+	ComponentDef,
+	ComponentBase,
+	ActorDef,
+	PartialActorDef,
+} from 'jam/actors/Actor';
 
+import {Physics, PhysicsDef} from 'game/actors/components/Physics';
 import {
-	Physics,
-	create as createPhysics
-} from 'game/actors/components/Physics';
+	Animated,
+	create as createAnimatedSprite
+} from 'game/actors/components/animated';
 
 
-export type Component = actors.Component;
-export type ComponentDef = actors.ComponentDef;
-export type ActorDef = actors.ActorDef;
-
-
+/** Components held by an actor. */
 export interface ActorComponents {
-	readonly [key: string]: Component;
-	readonly physics: Physics;
-	readonly animated: Animated;
+	readonly [key: string]: jamActors.Component;
+	readonly phys: Physics;
+	readonly anim: Animated;
 }
 
 
-export interface Actor extends actors.Actor {
+// Set the keys different components will appear at. If not set, the class name
+// is used. Alternatively, individual components can override their prototype's
+// key, allowing multiple components of the same type to be used.
+Physics.prototype.key = 'phys';
+Animated.prototype.key = 'anim';
+
+
+/** Complete interface for actors in this game. */
+export interface Actor extends jamActors.Actor {
 	readonly cmp: ActorComponents;
 }
 
@@ -30,6 +41,6 @@ export const factory = new Factory<Actor>();
 
 // Define actor component factories here.
 factory.setCmpFactories({
-	animated: (ad: AnimatedDef, actorID: symbol) => new Animated(ad, actorID),
-	physics: createPhysics,
+	animated: createAnimatedSprite,
+	physics: (def: PhysicsDef, actorID: symbol) => new Physics(def, actorID),
 });

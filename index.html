@@ -7,12 +7,20 @@
 	</head>
 
 	<body>
-		<div id="container">
-		</div>
+		<div id="container"></div>
 
 		<script type="text/javascript" src="node_modules/systemjs/dist/system.js"></script>
-		<script type="text/javascript" src="node_modules/pixi.js/dist/pixi.min.js"></script>
-		<script type="text/javascript" src="node_modules/p2/build/p2.min.js"></script>
+		<script type="text/javascript" src="node_modules/pixi.js/dist/pixi.js"></script>
+		<script type="text/javascript" src="node_modules/p2/build/p2.js"></script>
 		<script type="text/javascript" src="config/system.js"></script>
+
+		<template id="main-menu-tpl">
+			<div id="main-menu-container" class="hidden">
+				<div id="main-menu" class="menu">
+					<h3>Main menu</h3>
+					<button class="btn btn-start-game">Start</button>
+				</div>
+			</div>
+		</template>
 	</body>
 </html>

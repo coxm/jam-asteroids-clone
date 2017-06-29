@@ -1,3 +1,13 @@
 {
-	"title": "Level_0"
+	"title": "Level_0",
+	"actors": [
+		{
+			"depends": "Player",
+			"position": [0, 0]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [20, 20]
+		}
+	]
 }

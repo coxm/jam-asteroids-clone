@@ -29,7 +29,6 @@
 		}
 	},
 	"include": [
-		"node_modules/jam/src/**/*.ts",
 		"../node_modules/jam/src/**/*.ts"
 	],
 	"files": [

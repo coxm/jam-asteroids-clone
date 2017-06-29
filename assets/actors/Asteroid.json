@@ -1,0 +1,19 @@
+{
+	"depends": "Entity",
+	"cmp": [
+		{
+			"factory": "animated",
+			"initial": "basic",
+			"stopped": true,
+			"texture": "Asteroid.png",
+			"frameWidth": 32,
+			"frameHeight": 32,
+			"frameCount": 1,
+			"animations": {
+				"basic": {
+					"frames": [0]
+				}
+			}
+		}
+	]
+}

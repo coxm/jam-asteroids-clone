@@ -1,9 +1,10 @@
-import {State, resume, reset, destroy} from 'jam/states/State';
+import {State, resume, reset} from 'jam/states/State';
 export {resume} from 'jam/states/State';
 import {Relation} from 'jam/states/Relation';
-import {Manager, TriggerEvent, AddOptions} from 'jam/states/Manager';
+import {Manager, TriggerEvent} from 'jam/states/Manager';
 
 import {Level} from './Level';
+import {MainMenu} from './MainMenu';
 
 
 /**
@@ -13,8 +14,9 @@ import {Level} from './Level';
  * trigger configuration.
  */
 export const enum Trigger {
-	failure,
+	play,
 	success,
+	failure,
 }
 
 
@@ -40,44 +42,44 @@ export const manager = new Manager<State, Trigger>({
 });
 
 
-/** Add a state and provide its `name` property as an alias. */
-const add = (state: State, options?: AddOptions<State, Trigger>): number =>
-	manager.add(state, Object.assign({}, options, {
-		alias: state.name,
-	}));
-
-
-const level0 = add(new Level('Level_0'));
-const level1 = add(new Level('Level_1'));
-
-
-// Configure our state tree:
-// RootState
-// |-- Level_0
-// |-- Level_1
-add(new State('RootState'), {
-	children: [
-		level0,
-		level1,
-	],
-});
-
-
-// Configure state triggers.
+/** State transition: advance to the next level on 'success'. */
 const advanceOnSuccess = {
 	trigger: Trigger.success,
-	exit: destroy,
-	rel: Relation.sibling,
+	exit: (state: State): void => state.destroy(),
+	// Using `Relation.siblingElseUp` indicates that when the final level is
+	// complete, the state manager reverts to the parent state (i.e. MainMenu).
+	rel: Relation.siblingElseUp,
 };
+/** State transition: restart the current level on 'failure'. */
 const restartOnFailure = {
 	trigger: Trigger.failure,
 	exit: reset,
 	rel: Relation.same,
 };
-const completeGameOnSuccess = {
-	trigger: Trigger.success,
-	exit: destroy,
-	rel: Relation.parent,
+/** State transition: start the first child state on 'play'. */
+const startFirstChild = {
+	trigger: Trigger.play,
+	exit: (state: State): void => state.detach(),
+	rel: Relation.child,
 };
-manager.onMany(level0, [restartOnFailure, advanceOnSuccess]);
-manager.onMany(level1, [restartOnFailure, completeGameOnSuccess]);
+
+
+// Configure our state tree:
+// MainMenu (root state)
+//   |-- Level_0
+//   |-- Level_1
+const mainMenuID = manager.add(new MainMenu('MainMenu'), {
+	alias: 'MainMenu',
+	children: [
+		manager.add(new Level('Level_0'), {
+			alias: 'Level_0',
+			transitions: [advanceOnSuccess, restartOnFailure],
+		}),
+		manager.add(new Level('Level_1'), {
+			alias: 'Level_1',
+			transitions: [advanceOnSuccess, restartOnFailure],
+		}),
+	],
+	transitions: [startFirstChild],
+});
+manager.set(mainMenuID);  // Set the initial state.
