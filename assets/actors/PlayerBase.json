@@ -11,9 +11,9 @@
 			"shapes": [
 				{
 					"type": "CIRCLE",
-					"radius": 10,
-					"collisionGroup": "players",
-					"collisionMask": "all"
+					"radius": 12,
+					"collisionGroup": 1,
+					"collisionMask": -1
 				}
 			]
 		},
@@ -36,6 +36,10 @@
 			"maxAngSpeed": 3,
 			"maxFwdThrust": 200,
 			"maxRevThrust": 200
+		},
+		{
+			"factory": "health",
+			"hitpoints": 5
 		}
 	]
 }

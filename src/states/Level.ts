@@ -1,4 +1,9 @@
 import {State} from 'jam/states/State';
+import {
+	ContactManager,
+	NormalContactEvent,
+	SensorContactEvent,
+} from 'jam/physics/ContactManager';
 import {Loop, loop} from 'jam/util/loop';
 
 import * as render from 'game/render';
@@ -57,7 +62,9 @@ export class Level extends State {
 	private stage = new PIXI.Container();
 	private actors: Map<symbol, actors.Actor>;
 	private aliased = new Map<string, actors.Actor>();
+	private bodyOwners = new WeakMap<p2.Body, actors.Actor>();
 	private world: p2.World;
+	private contacts: ContactManager;
 	private updateLoop: Loop<undefined>;
 	private eventsBatchID: symbol;
 
@@ -68,6 +75,15 @@ export class Level extends State {
 		const world = this.world = new p2.World({
 			gravity: [0, 0],
 		});
+		this.contacts = new ContactManager({
+			onNormalContact(ev: NormalContactEvent): void {
+				events.manager.fire(events.Category.physNormalContact, ev);
+			},
+			onSensorContact(ev: SensorContactEvent): void {
+				// Nothing to do here.
+			}
+		});
+		this.contacts.install(this.world);
 		this.updateLoop = loop({
 			fn(msNow: number, msSinceLast: number): void {
 				world.step(UPDATE_LOOP_FREQUENCY_SECONDS);
@@ -125,6 +141,7 @@ export class Level extends State {
 			// Add physics components to the physics simulation.
 			if (actor.cmp.phys) {
 				this.world.addBody(actor.cmp.phys.body);
+				this.bodyOwners.set(actor.cmp.phys.body, actor);
 			}
 
 			// Add animated components to the stage.
@@ -162,7 +179,8 @@ export class Level extends State {
 	protected doAttach(): void {
 		events.manager.batch(
 			[
-				[events.Category.actorHit, this.onActorHit],
+				[events.Category.physNormalContact, this.onPhysNormalContact],
+				[events.Category.actorHasNoHealth, this.onActorHasNoHealth],
 			],
 			{
 				id: this.eventsBatchID,
@@ -175,15 +193,34 @@ export class Level extends State {
 		events.manager.unbatch(this.eventsBatchID);
 	}
 
-	private onActorHit(ev: events.Event): void {
-		const actor = ev.data.actor;
+	private onPhysNormalContact(ev: events.Event): void {
+		if (!ev.data.begin) {
+			return;
+		}
+
+		this.bodyOwners.get(ev.data.a.body)!.cmp.health.subtract(1);
+		this.bodyOwners.get(ev.data.b.body)!.cmp.health.subtract(1);
+	}
+
+	private onActorHasNoHealth(ev: events.Event): void {
+		const actor = this.actorAt(ev.data.actorID);
+		this.deleteActor(actor);
+	}
+
+	private deleteActor(actor: actors.Actor): void {
 		if (actor.cmp.phys) {
 			this.world.removeBody(actor.cmp.phys.body);
+			this.bodyOwners.delete(actor.cmp.phys.body);
 		}
 		if (actor.cmp.anim) {
 			this.stage.removeChild(actor.cmp.anim.renderable);
 		}
 		this.actors.delete(actor.id);
-		this.aliased.delete(actor.alias);
+		if (actor.alias) {
+			this.aliased.delete(actor.alias);
+			if (actor.alias.startsWith('Player')) {
+				events.manager.fire(events.Category.levelFailure, null);
+			}
+		}
 	}
 }

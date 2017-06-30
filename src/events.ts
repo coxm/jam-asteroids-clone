@@ -7,7 +7,10 @@ import * as jamEvents from 'jam/events/Manager';
  * Insert new categories here to define new event types.
  */
 export const enum Category {
-	actorHit,
+	physNormalContact,
+	actorHasNoHealth,
+	levelSuccess,
+	levelFailure,
 }
 
 

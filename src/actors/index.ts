@@ -23,6 +23,7 @@ import {
 	KeyboardControlDef,
 	Driver,
 } from 'game/actors/components/KeyboardControl';
+import {Health, HealthDef} from 'game/actors/components/Health';
 
 
 /** Components held by an actor. */
@@ -32,6 +33,7 @@ export interface ActorComponents {
 	readonly anim: Animated;
 	readonly driver: Driver & jamActors.Component;
 	readonly input: KeyboardControl;  // Caution: optional!
+	readonly health: Health;
 }
 
 
@@ -42,6 +44,7 @@ Physics.prototype.key = 'phys';
 Animated.prototype.key = 'anim';
 InputDriver.prototype.key = AsteroidDriver.prototype.key = 'driver';
 KeyboardControl.prototype.key = 'input';
+Health.prototype.key = 'health';
 
 
 
@@ -51,6 +54,7 @@ export interface Actor extends jamActors.Actor {
 }
 
 
+/** The factory is responsible for creating all actors in the game. */
 export const factory = new Factory<Actor>();
 
 
@@ -65,4 +69,5 @@ factory.setCmpFactories({
 		new AsteroidDriver(def, actorID),
 	input: (def: KeyboardControlDef, actorID: symbol) =>
 		new KeyboardControl(def, actorID),
+	health: (def: HealthDef, actorID: symbol) => new Health(def, actorID),
 });

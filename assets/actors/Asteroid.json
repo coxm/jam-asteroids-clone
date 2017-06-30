@@ -11,9 +11,9 @@
 			"shapes": [
 				{
 					"type": "CIRCLE",
-					"radius": 10,
-					"collisionGroup": "asteroids",
-					"collisionMask": "all"
+					"radius": 16,
+					"collisionGroup": 1,
+					"collisionMask": -1
 				}
 			]
 		},
@@ -35,6 +35,10 @@
 			"factory": "asteroidDriver",
 			"angularVelocity": 0.5,
 			"angle": 1.1239
+		},
+		{
+			"factory": "health",
+			"hitpoints": 3
 		}
 	]
 }
