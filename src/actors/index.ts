@@ -18,7 +18,11 @@ import {
 	AsteroidDriverDef,
 } from 'game/actors/components/AsteroidDriver';
 import {InputDriver, InputDriverDef} from 'game/actors/components/InputDriver';
-import {KeyboardControl, Driver} from 'game/actors/components/KeyboardControl';
+import {
+	KeyboardControl,
+	KeyboardControlDef,
+	Driver,
+} from 'game/actors/components/KeyboardControl';
 
 
 /** Components held by an actor. */
@@ -59,6 +63,6 @@ factory.setCmpFactories({
 		new InputDriver(def, actorID),
 	asteroidDriver: (def: AsteroidDriverDef, actorID: symbol) =>
 		new AsteroidDriver(def, actorID),
-	input: (def: jamActors.ComponentDef, actorID: symbol) =>
-		new KeyboardControl(actorID),
+	input: (def: KeyboardControlDef, actorID: symbol) =>
+		new KeyboardControl(def, actorID),
 });

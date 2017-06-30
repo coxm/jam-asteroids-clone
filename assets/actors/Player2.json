@@ -1,0 +1,10 @@
+{
+	"alias": "Player2",
+	"depends": "PlayerBase",
+	"cmp": [
+		{
+			"factory": "input",
+			"type": "wasd"
+		}
+	]
+}

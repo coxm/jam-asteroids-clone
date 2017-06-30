@@ -1,0 +1,10 @@
+{
+	"alias": "Player1",
+	"depends": "PlayerBase",
+	"cmp": [
+		{
+			"factory": "input",
+			"type": "arrows"
+		}
+	]
+}

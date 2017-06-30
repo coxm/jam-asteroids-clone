@@ -36,9 +36,6 @@
 			"maxAngSpeed": 3,
 			"maxFwdThrust": 200,
 			"maxRevThrust": 200
-		},
-		{
-			"factory": "input"
 		}
 	]
 }

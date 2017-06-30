@@ -2,13 +2,11 @@
 	"title": "Level_0 (2 players)",
 	"actors": [
 		{
-			"alias": "Player1",
-			"depends": "Player",
+			"depends": "Player1",
 			"position": [40, 40]
 		},
 		{
-			"alias": "Player2",
-			"depends": "Player",
+			"depends": "Player2",
 			"position": [-40, 40]
 		},
 		{

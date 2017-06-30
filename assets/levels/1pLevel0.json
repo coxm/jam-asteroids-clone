@@ -3,7 +3,7 @@
 	"actors": [
 		{
 			"alias": "Player",
-			"depends": "Player",
+			"depends": "Player1",
 			"position": [0, 0]
 		},
 		{

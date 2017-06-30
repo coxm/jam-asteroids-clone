@@ -1,9 +1,13 @@
 import * as render from 'game/render';
 import * as states from 'game/states/index';
-import 'game/input';
 
 
 document.getElementById('container')!.appendChild(render.renderer.view);
+
+
+// Initialise key events on the document body, without translating key codes to
+// actions.
+initKeyEvents(document.body);
 
 
 // Start the initial state.
