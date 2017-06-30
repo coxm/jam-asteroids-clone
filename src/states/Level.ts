@@ -154,6 +154,8 @@ export class Level extends State {
 	protected doDeinit(): void {
 		this.stage.removeChildren();
 		this.actors.clear();
+		this.aliased.clear();
+		this.world.clear();
 	}
 
 	protected doStart(): void {

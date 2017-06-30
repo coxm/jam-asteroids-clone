@@ -16,6 +16,14 @@
 		{
 			"depends": "Asteroid",
 			"position": [0, -40]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [20, 80]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [-20, -80]
 		}
 	]
 }
