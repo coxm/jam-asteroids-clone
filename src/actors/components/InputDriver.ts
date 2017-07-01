@@ -45,8 +45,8 @@ export class InputDriver implements Component {
 	}
 
 	update(): void {
-		this.force[0] = this.thrust * Math.sin(this.body!.angle);
-		this.force[1] = this.thrust * -Math.cos(this.body!.angle);
+		this.force[0] = this.thrust * Math.cos(this.body!.angle);
+		this.force[1] = this.thrust * Math.sin(this.body!.angle);
 		this.body!.applyForce(this.force as any as number[]);
 		this.body!.angularVelocity = this.angularVelocity;
 	}
