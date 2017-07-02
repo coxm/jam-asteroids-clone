@@ -4,7 +4,7 @@
   "description": "Jam engine example",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/coxm/jam-engine-example"
+    "url": "git+https://github.com/coxm/jam-asteroids-clone"
   },
   "main": "build/js/game/index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "test": "make test"
   },
   "dependencies": {
-    "jam": "bitbucket:mcox136/jam-engine#v15.0.0",
+    "jam": "github:coxm/jam-engine#v15.0.0",
     "p2": "^0.7.1",
     "pixi.js": "4.4.0",
     "systemjs": "^0.19.37",
