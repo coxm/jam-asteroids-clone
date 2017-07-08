@@ -1,0 +1,10 @@
+{
+	"cmp": [
+		{
+			"factory": "gun",
+			"offset": [40, 80],
+			"reloadTime": 500,
+			"projectileName": "Bullet"
+		}
+	]
+}

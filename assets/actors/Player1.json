@@ -1,6 +1,6 @@
 {
 	"alias": "Player1",
-	"depends": "PlayerBase",
+	"depends": ["PlayerBase", "HasNormalGun"],
 	"cmp": [
 		{
 			"factory": "input",

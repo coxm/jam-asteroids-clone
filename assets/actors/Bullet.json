@@ -8,9 +8,9 @@
 			"angularDamping": 0,
 			"shapes": [
 				{
-					"type": "circle",
-					"radius": 16,
-					"collisionGroup": "asteroids",
+					"type": "particle",
+					"radius": 1,
+					"collisionGroup": "bullets",
 					"collisionMask": "*"
 				}
 			]
@@ -19,10 +19,9 @@
 			"factory": "animated",
 			"initial": "basic",
 			"stopped": true,
-			"texture": "Asteroid.png",
-			"frameWidth": 32,
-			"frameHeight": 32,
-			"frameCount": 1,
+			"texture": "Bullet.png",
+			"frameWidth": 8,
+			"frameHeight": 8,
 			"animations": {
 				"basic": {
 					"frames": [0]
@@ -30,13 +29,13 @@
 			}
 		},
 		{
-			"factory": "asteroidDriver",
-			"angularVelocity": 0.5,
-			"angle": 1.1239
+			"factory": "health",
+			"hitpoints": 1
 		},
 		{
-			"factory": "health",
-			"hitpoints": 3
+			"factory": "projectile",
+			"damage": 10,
+			"speed": 400
 		}
 	]
 }

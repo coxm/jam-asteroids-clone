@@ -1,8 +1,16 @@
+import {create as createBody, BodyDef} from 'jam/physics/body';
+
 import * as actors from 'game/actors/index';
-import {createBody, BodyDef} from 'game/physics';
 
 
 export type PhysicsDef = actors.ComponentDef & BodyDef;
+
+
+export enum CollisionGroup {
+	players =   0b0001,
+	bullets =   0b0010,
+	asteroids = 0b0100,
+}
 
 
 export class Physics extends actors.ComponentBase {
@@ -10,7 +18,7 @@ export class Physics extends actors.ComponentBase {
 
 	constructor(def: PhysicsDef, actorID: symbol, actorDef: actors.ActorDef) {
 		super(actorID);
-		this.body = createBody(def);
+		this.body = createBody(def, CollisionGroup as any);
 		if (actorDef.position) {
 			this.body.position.set(actorDef.position);
 		}

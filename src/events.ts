@@ -9,6 +9,7 @@ import * as jamEvents from 'jam/events/Manager';
 export const enum Category {
 	physNormalContact,
 	actorHasNoHealth,
+	createProjectile,
 	levelSuccess,
 	levelFailure,
 }

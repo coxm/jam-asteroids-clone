@@ -23,7 +23,10 @@ import {
 	KeyboardControlDef,
 	Driver,
 } from 'game/actors/components/KeyboardControl';
+export {Driver} from 'game/actors/components/KeyboardControl';
 import {Health, HealthDef} from 'game/actors/components/Health';
+import {Gun, GunDef} from 'game/actors/components/Gun';
+import {Projectile, ProjectileDef} from 'game/actors/components/Projectile';
 
 
 /** Components held by an actor. */
@@ -34,6 +37,8 @@ export interface ActorComponents {
 	readonly driver: Driver & jamActors.Component;
 	readonly input: KeyboardControl;  // Caution: optional!
 	readonly health: Health;
+	readonly gun: Gun;  // Caution: optional!
+	readonly projectile: Projectile;  // Caution: optional!
 }
 
 
@@ -45,6 +50,8 @@ Animated.prototype.key = 'anim';
 InputDriver.prototype.key = AsteroidDriver.prototype.key = 'driver';
 KeyboardControl.prototype.key = 'input';
 Health.prototype.key = 'health';
+Gun.prototype.key = 'gun';
+Projectile.prototype.key = 'projectile';
 
 
 
@@ -70,4 +77,7 @@ factory.setCmpFactories({
 	input: (def: KeyboardControlDef, actorID: symbol) =>
 		new KeyboardControl(def, actorID),
 	health: (def: HealthDef, actorID: symbol) => new Health(def, actorID),
+	gun: (def: GunDef, actorID: symbol) => new Gun(def, actorID),
+	projectile: (def: ProjectileDef, actorID: symbol) =>
+		new Projectile(def, actorID),
 });

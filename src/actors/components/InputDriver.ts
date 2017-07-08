@@ -1,4 +1,5 @@
-import {Actor, ComponentDef, Component} from 'game/actors/index';
+import {Driver, Actor, ComponentDef, Component} from 'game/actors/index';
+import {Gun} from './Gun';
 
 
 export interface InputDriverDef extends ComponentDef {
@@ -17,10 +18,11 @@ const enum Move {
 
 
 /** A component which responds to `KeyAction`s by moving its actor. */
-export class InputDriver implements Component {
+export class InputDriver implements Component, Driver {
 	key: string;
 
 	private body: p2.Body | null = null;
+	private gun: Gun | null = null;
 	private moveBits: number = 0;
 	private angularVelocity: number = 0;
 	private thrust: number = 0;
@@ -38,10 +40,12 @@ export class InputDriver implements Component {
 
 	onAdd(actor: Actor): void {
 		this.body = actor.cmp.phys.body;
+		this.gun = actor.cmp.gun;
 	}
 
 	onRemove(actor: Actor): void {
 		this.body = null;
+		this.gun = null;
 	}
 
 	update(): void {
@@ -93,5 +97,9 @@ export class InputDriver implements Component {
 		this.angularVelocity = (this.moveBits & Move.left)
 			?	-this.maxAngSpeed
 			:	0;
+	}
+
+	shoot(): void {
+		this.gun!.shoot();
 	}
 }
