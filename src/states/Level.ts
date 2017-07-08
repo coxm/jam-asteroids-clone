@@ -69,7 +69,8 @@ const expandActorDef =
 
 export class Level extends State {
 	private title: string = '';
-	private stage = new PIXI.Container();
+	private stage: PIXI.Container;
+	private score: {display: PIXI.Text; value: number; changed: boolean;};
 	private actors: Map<symbol, actors.Actor>;
 	private aliased = new Map<string, actors.Actor>();
 	private bodyOwners = new WeakMap<p2.Body, actors.Actor>();
@@ -96,6 +97,16 @@ export class Level extends State {
 			}
 		});
 		this.contacts.install(this.world);
+
+		this.score = {
+			display: new PIXI.Text('Score: 0'),
+			value: 0,
+			changed: false,
+		};
+		this.score.display.position.set(180, 200);
+
+		this.stage = new PIXI.Container();
+		this.stage.addChild(this.score.display);
 	}
 
 	/** Lookup an actor by ID or alias. */
@@ -136,6 +147,9 @@ export class Level extends State {
 
 	protected doDeinit(): void {
 		this.stage.removeChildren();
+		for (let actor of this.actors.values()) {
+			this.deleteActor(actor);
+		}
 		this.actors.clear();
 		this.aliased.clear();
 		this.world.clear();
@@ -208,6 +222,11 @@ export class Level extends State {
 		for (let actor of toKill) {
 			this.deleteActor(actor);
 		}
+
+		if (this.score.changed) {
+			this.score.display.text = `Score: ${this.score.value}`;
+			this.score.changed = false;
+		}
 	}
 
 	private onPhysNormalContact(ev: events.Event): void {
@@ -215,8 +234,17 @@ export class Level extends State {
 			return;
 		}
 
-		this.bodyOwners.get(ev.data.a.body)!.cmp.health.subtract(1);
-		this.bodyOwners.get(ev.data.b.body)!.cmp.health.subtract(1);
+		const {a: {body: bodyA}, b: {body: bodyB}} = ev.data;
+		const actorA = this.bodyOwners.get(bodyA)!;
+		const actorB = this.bodyOwners.get(bodyB)!;
+		actorA.cmp.health.subtract(1);
+		actorB.cmp.health.subtract(1);
+
+		// If exactly one is a projectile, update the score.
+		if (!actorA.cmp.projectile !== !actorB.cmp.projectile) {
+			this.score.value += 10;
+			this.score.changed = true;
+		}
 	}
 
 	private onActorHasNoHealth(ev: events.Event): void {
@@ -225,7 +253,6 @@ export class Level extends State {
 	}
 
 	private onCreateProjectile(ev: events.Event): void {
-		console.log('create projectile');
 		const {projectileName, position, offset, angle} = (ev.data as {
 			projectileName: string;
 			position: AnyVec2;
