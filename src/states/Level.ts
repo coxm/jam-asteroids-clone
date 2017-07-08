@@ -10,6 +10,7 @@ import * as load from 'game/load/index';
 import * as events from 'game/events';
 import * as actors from 'game/actors/index';
 import {InputDriver} from 'game/actors/components/InputDriver';
+import {CollisionGroup} from 'game/physics';
 
 
 /** The data found in a level's JSON file. */
@@ -79,7 +80,7 @@ export class Level extends State {
 	private updateLoopID: number = 0;
 	private eventsBatchID: symbol;
 	private dynamicActorDefs: {[key: string]: actors.ActorDef;} = {};
-
+	private failed: boolean = false;
 
 	constructor(name: string) {
 		super(name);
@@ -96,17 +97,14 @@ export class Level extends State {
 				// Nothing to do here.
 			}
 		});
-		this.contacts.install(this.world);
 
 		this.score = {
 			display: new PIXI.Text('Score: 0'),
 			value: 0,
 			changed: false,
 		};
-		this.score.display.position.set(180, 200);
 
 		this.stage = new PIXI.Container();
-		this.stage.addChild(this.score.display);
 	}
 
 	/** Lookup an actor by ID or alias. */
@@ -138,6 +136,9 @@ export class Level extends State {
 	}
 
 	protected doInit(data: LevelPreloadData): void {
+		this.score.display.position.set(180, 200);
+		this.stage.addChild(this.score.display);
+		this.contacts.install(this.world);
 		this.title = data.title;
 		Object.assign(this.dynamicActorDefs, data.dynamicActors);
 		for (let def of data.initialActors) {
@@ -152,10 +153,12 @@ export class Level extends State {
 		}
 		this.actors.clear();
 		this.aliased.clear();
+		this.contacts.uninstall();
 		this.world.clear();
 	}
 
 	protected doStart(): void {
+		this.failed = false;
 		render.stage.addChild(this.stage);
 		this.doUnpause();
 	}
@@ -198,6 +201,12 @@ export class Level extends State {
 	}
 
 	private update(): void {
+		if (this.failed) {
+			this.pause();
+			events.manager.fire(events.Category.levelFailure, null);
+			return;
+		}
+
 		this.world.step(UPDATE_FREQ_HZ);
 		const toKill: actors.Actor[] = [];
 		for (let actor of this.actors.values()) {
@@ -274,6 +283,16 @@ export class Level extends State {
 		const body = actor.cmp.phys.body;
 		p2.vec2.set(body.velocity, speed * cos, speed * sin);
 		body.angle = angle;
+		this.bodyOwners.set(body, actor);
+
+		// Prevent the shooter from colliding with its own bullets for a brief
+		// period after firing.
+		const shape = body.shapes[0];
+		const mask = shape.collisionMask;
+		shape.collisionMask &= ~CollisionGroup.players;
+		setTimeout((): void => {
+			shape.collisionMask = mask;
+		}, 200);
 	}
 
 	private createActor(def: actors.ActorDef): actors.Actor {
@@ -310,8 +329,11 @@ export class Level extends State {
 		if (actor.alias) {
 			this.aliased.delete(actor.alias);
 			if (actor.alias.startsWith('Player')) {
-				events.manager.fire(events.Category.levelFailure, null);
+				// Mark failed so we can complete this update cycle before
+				// clearing the level.
+				this.failed = true;
 			}
 		}
+		actor.destroy();
 	}
 }
