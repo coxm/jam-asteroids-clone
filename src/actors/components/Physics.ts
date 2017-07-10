@@ -1,16 +1,10 @@
 import {create as createBody, BodyDef} from 'jam/physics/body';
 
 import * as actors from 'game/actors/index';
+import {CollisionGroup} from 'game/physics';
 
 
 export type PhysicsDef = actors.ComponentDef & BodyDef;
-
-
-export enum CollisionGroup {
-	players =   0b0001,
-	bullets =   0b0010,
-	asteroids = 0b0100,
-}
 
 
 export class Physics extends actors.ComponentBase {

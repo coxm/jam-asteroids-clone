@@ -70,7 +70,12 @@ const expandActorDef =
 
 export class Level extends State {
 	private title: string = '';
-	private stage: PIXI.Container;
+	private stages: {
+		readonly [key: string]: PIXI.Container;
+		readonly projectiles: PIXI.Container;
+		readonly main: PIXI.Container;
+		readonly hud: PIXI.Container;
+	};
 	private score: {display: PIXI.Text; value: number; changed: boolean;};
 	private actors: Map<symbol, actors.Actor>;
 	private aliased = new Map<string, actors.Actor>();
@@ -104,7 +109,11 @@ export class Level extends State {
 			changed: false,
 		};
 
-		this.stage = new PIXI.Container();
+		this.stages = {
+			projectiles: new PIXI.Container(),
+			main: new PIXI.Container(),
+			hud: new PIXI.Container(),
+		};
 	}
 
 	/** Lookup an actor by ID or alias. */
@@ -137,7 +146,7 @@ export class Level extends State {
 
 	protected doInit(data: LevelPreloadData): void {
 		this.score.display.position.set(180, 200);
-		this.stage.addChild(this.score.display);
+		this.stages.hud.addChild(this.score.display);
 		this.contacts.install(this.world);
 		this.title = data.title;
 		Object.assign(this.dynamicActorDefs, data.dynamicActors);
@@ -147,7 +156,9 @@ export class Level extends State {
 	}
 
 	protected doDeinit(): void {
-		this.stage.removeChildren();
+		for (let key in this.stages) {
+			this.stages[key].removeChildren();
+		}
 		for (let actor of this.actors.values()) {
 			this.deleteActor(actor);
 		}
@@ -159,12 +170,16 @@ export class Level extends State {
 
 	protected doStart(): void {
 		this.failed = false;
-		render.stage.addChild(this.stage);
+		render.stage.addChild(this.stages.projectiles);
+		render.stage.addChild(this.stages.main);
+		render.stage.addChild(this.stages.hud);
 		this.doUnpause();
 	}
 
 	protected doStop(): void {
-		render.stage.removeChild(this.stage);
+		render.stage.removeChild(this.stages.projectiles);
+		render.stage.removeChild(this.stages.main);
+		render.stage.removeChild(this.stages.hud);
 		this.doPause();
 	}
 
@@ -285,8 +300,8 @@ export class Level extends State {
 		body.angle = angle;
 		this.bodyOwners.set(body, actor);
 
-		// Prevent the shooter from colliding with its own bullets for a brief
-		// period after firing.
+		// Prevent the shooter from colliding with its own projectiles for a
+		// brief period after firing.
 		const shape = body.shapes[0];
 		const mask = shape.collisionMask;
 		shape.collisionMask &= ~CollisionGroup.players;
@@ -313,7 +328,10 @@ export class Level extends State {
 		// Add animated components to the stage.
 		actor.cmp.anim.renderable.position.set(
 			body.position[0], body.position[1]);
-		this.stage.addChild(actor.cmp.anim.renderable);
+		(actor.cmp.projectile
+			?	this.stages.projectiles
+			:	this.stages.main
+		).addChild(actor.cmp.anim.renderable);
 		return actor;
 	}
 
@@ -322,9 +340,14 @@ export class Level extends State {
 			this.world.removeBody(actor.cmp.phys.body);
 			this.bodyOwners.delete(actor.cmp.phys.body);
 		}
-		if (actor.cmp.anim) {
-			this.stage.removeChild(actor.cmp.anim.renderable);
+
+		if (actor.cmp.projectile) {
+			this.stages.projectiles.removeChild(actor.cmp.anim.renderable);
 		}
+		else if (actor.cmp.anim) {
+			this.stages.main.removeChild(actor.cmp.anim.renderable);
+		}
+
 		this.actors.delete(actor.id);
 		if (actor.alias) {
 			this.aliased.delete(actor.alias);
