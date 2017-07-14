@@ -12,6 +12,8 @@ export const enum Category {
 	createProjectile,  // Create projectile request.
 	levelSuccess,  // Level completed.
 	levelFailure,  // Level failed.
+	engineStarted,  // An engine started.
+	engineStopped,  // An engine stopped.
 }
 
 

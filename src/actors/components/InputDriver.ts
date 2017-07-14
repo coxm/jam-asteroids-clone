@@ -1,3 +1,4 @@
+import * as events from 'game/events';
 import {Driver, Actor, ComponentDef, Component} from 'game/actors/index';
 import {Gun} from './Gun';
 
@@ -12,12 +13,17 @@ export interface InputDriverDef extends ComponentDef {
 const enum Move {
 	up = 0x01,
 	down = 0x02,
+	vertical = 0x03,
+
 	left = 0x04,
 	right = 0x08,
+	turning = 0x12,
 }
 
 
-/** A component which responds to `KeyAction`s by moving its actor. */
+/**
+ * A component which moves its actors with commands like `up()`, `down()`, etc.
+ */
 export class InputDriver implements Component, Driver {
 	key: string;
 
@@ -38,6 +44,10 @@ export class InputDriver implements Component, Driver {
 		this.maxRevThrust = -def.maxRevThrust || 0;
 	}
 
+	isMoving(bits: Move): boolean {
+		return !!(this.moveBits & bits);
+	}
+
 	onAdd(actor: Actor): void {
 		this.body = actor.cmp.phys.body;
 		this.gun = actor.cmp.gun;
@@ -56,6 +66,9 @@ export class InputDriver implements Component, Driver {
 	}
 
 	up(): void {
+		if (!(this.moveBits & Move.vertical)) {
+			events.manager.fire(events.Category.engineStarted, {driver: this});
+		}
 		this.moveBits |= Move.up;
 		this.thrust = this.maxFwdThrust;
 	}
@@ -63,9 +76,15 @@ export class InputDriver implements Component, Driver {
 	stopUp(): void {
 		this.moveBits &= ~Move.up;
 		this.thrust = (this.moveBits & Move.down) ? this.maxRevThrust : 0;
+		if (!(this.moveBits & Move.vertical)) {
+			events.manager.fire(events.Category.engineStopped, {driver: this});
+		}
 	}
 
 	down(): void {
+		if (!(this.moveBits & Move.vertical)) {
+			events.manager.fire(events.Category.engineStarted, {driver: this});
+		}
 		this.moveBits |= Move.down;
 		this.thrust = this.maxRevThrust;
 	}
@@ -73,6 +92,9 @@ export class InputDriver implements Component, Driver {
 	stopDown(): void {
 		this.moveBits &= ~Move.down;
 		this.thrust = (this.moveBits & Move.up) ? this.maxFwdThrust : 0;
+		if (!(this.moveBits & Move.vertical)) {
+			events.manager.fire(events.Category.engineStopped, {driver: this});
+		}
 	}
 
 	left(): void {

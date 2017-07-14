@@ -9,8 +9,10 @@ import * as render from 'game/render';
 import * as load from 'game/load/index';
 import * as events from 'game/events';
 import * as actors from 'game/actors/index';
+import {context as audioContext} from 'game/audio/index';
 import {InputDriver} from 'game/actors/components/InputDriver';
 import {CollisionGroup} from 'game/physics';
+import {LevelAudio} from 'game/audio/LevelAudio';
 
 
 /** The data found in a level's JSON file. */
@@ -86,6 +88,9 @@ export class Level extends State {
 	private eventsBatchID: symbol;
 	private dynamicActorDefs: {[key: string]: actors.ActorDef;} = {};
 	private failed: boolean = false;
+	private readonly players: actors.Actor[] = [];
+
+	private audio: LevelAudio | null = null;
 
 	constructor(name: string) {
 		super(name);
@@ -153,6 +158,10 @@ export class Level extends State {
 		for (let def of data.initialActors) {
 			this.createActor(def);
 		}
+		this.audio = new LevelAudio(
+			audioContext,
+			this.players.map(player => player.id)
+		);
 	}
 
 	protected doDeinit(): void {
@@ -166,6 +175,7 @@ export class Level extends State {
 		this.aliased.clear();
 		this.contacts.uninstall();
 		this.world.clear();
+		this.players.length = 0;
 	}
 
 	protected doStart(): void {
@@ -209,10 +219,12 @@ export class Level extends State {
 				context: this,
 			}
 		);
+		this.audio!.attach(events.manager);
 	}
 
 	protected doDetach(): void {
 		events.manager.unbatch(this.eventsBatchID);
+		this.audio!.detach(events.manager);
 	}
 
 	private update(): void {
@@ -332,6 +344,10 @@ export class Level extends State {
 			?	this.stages.projectiles
 			:	this.stages.main
 		).addChild(actor.cmp.anim.renderable);
+
+		if (def.depends && def.depends.includes("PlayerBase")) {
+			this.players.push(actor);
+		}
 		return actor;
 	}
 
@@ -356,6 +372,11 @@ export class Level extends State {
 				// clearing the level.
 				this.failed = true;
 			}
+		}
+
+		const playerIndex = this.players.indexOf(actor);
+		if (playerIndex >= 0) {
+			this.players.splice(playerIndex, 1);
 		}
 		actor.destroy();
 	}

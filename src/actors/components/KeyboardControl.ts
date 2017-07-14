@@ -1,15 +1,18 @@
-import * as base from 'jam/actors/cmp/KeyboardControl';
+import {
+	KeyboardControl as ControlBase,
+	Driver as DriverBase
+} from 'jam/actors/cmp/KeyboardControl';
 import {KeyCode} from 'jam/input/KeyCode';
 
 import {Actor, ComponentDef} from 'game/actors/index';
 
 
-type InputType = 'arrows' | 'wasd' | 'numpad';
-
-
-export interface Driver extends base.Driver {
+export interface Driver extends DriverBase {
 	shoot(): void;
 }
+
+
+type InputType = 'arrows' | 'wasd' | 'numpad';
 
 
 const KEYDOWN_HANDLERS = {
@@ -18,7 +21,7 @@ const KEYDOWN_HANDLERS = {
 		[KeyCode.s, driver.down.bind(driver)],
 		[KeyCode.a, driver.left.bind(driver)],
 		[KeyCode.d, driver.right.bind(driver)],
-		[KeyCode.x, driver.shoot.bind(driver)],
+		[KeyCode.q, driver.shoot.bind(driver)],
 	],
 	arrows: (driver: Driver): [KeyCode, () => void][] => [
 		[KeyCode.ArrowUp, driver.up.bind(driver)],
@@ -64,7 +67,7 @@ export interface KeyboardControlDef extends ComponentDef {
 }
 
 
-export class KeyboardControl extends base.KeyboardControl {
+export class KeyboardControl extends ControlBase {
 	private readonly type: InputType
 	constructor(def: KeyboardControlDef, actorID: symbol) {
 		super(actorID);
