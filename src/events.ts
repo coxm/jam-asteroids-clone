@@ -9,7 +9,7 @@ import * as jamEvents from 'jam/events/Manager';
 export const enum Category {
 	physNormalContact,  // Normal physical contact.
 	actorHasNoHealth,  // Actor has no health remaining.
-	createProjectile,  // Create projectile request.
+	gunFired,  // A gun was fired.
 	levelSuccess,  // Level completed.
 	levelFailure,  // Level failed.
 	engineStarted,  // An engine started.

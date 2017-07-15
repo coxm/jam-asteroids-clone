@@ -212,7 +212,7 @@ export class Level extends State {
 			[
 				[events.Category.physNormalContact, this.onPhysNormalContact],
 				[events.Category.actorHasNoHealth, this.onActorHasNoHealth],
-				[events.Category.createProjectile, this.onCreateProjectile],
+				[events.Category.gunFired, this.onGunFired],
 			],
 			{
 				id: this.eventsBatchID,
@@ -288,7 +288,7 @@ export class Level extends State {
 		this.deleteActor(actor);
 	}
 
-	private onCreateProjectile(ev: events.Event): void {
+	private onGunFired(ev: events.Event): void {
 		const {projectileName, position, offset, angle} = (ev.data as {
 			projectileName: string;
 			position: AnyVec2;

@@ -36,7 +36,8 @@ export class Gun implements Component {
 		const now = Date.now();
 		if (now - this.lastShotTime > this.reloadTime) {
 			this.lastShotTime = now;
-			events.manager.fire(events.Category.createProjectile, {
+			events.manager.fire(events.Category.gunFired, {
+				actorID: this.actorID,
 				position: this.body!.position,
 				offset: this.offset,
 				angle: this.body!.angle,
