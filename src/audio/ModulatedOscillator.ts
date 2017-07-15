@@ -32,6 +32,30 @@ export class ModulatedOscillator {
 		this.modulationFrequency = realOr(options.modulationFrequency, 10);
 	}
 
+	get context(): AudioContext {
+		return this.oscillator.context;
+	}
+
+	get numberOfInputs(): number {
+		return 0;
+	}
+
+	get numberOfOutputs(): number {
+		return this.oscillator.numberOfOutputs;
+	}
+
+	get channelCountMode(): ChannelCountMode {
+		return 'explicit';
+	}
+
+	get channelCount(): number {
+		return this.oscillator.channelCount;
+	}
+
+	get channelInterpretation(): ChannelInterpretation {
+		return this.oscillator.channelInterpretation;
+	}
+
 	get frequency(): number {
 		return this.oscillator.frequency.value;
 	}
@@ -53,10 +77,6 @@ export class ModulatedOscillator {
 		this.modulator.frequency.value = value;
 	}
 
-	get channelCount(): number {
-		return this.oscillator.channelCount;
-	}
-
 	start(): void {
 		this.oscillator.start();
 		this.modulator.start();
@@ -75,5 +95,9 @@ export class ModulatedOscillator {
 		: T
 	{
 		return this.oscillator.connect(dest, outChannel, inChannel) as T;
+	}
+
+	disconnect(): void {
+		this.oscillator.disconnect();
 	}
 }
