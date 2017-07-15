@@ -27,9 +27,10 @@ export class ModulatedOscillator {
 		this.modulator.connect(this.gainNode);
 		this.gainNode.connect(this.oscillator.frequency);
 
-		this.frequency = realOr(options.frequency, 440);
-		this.modulationDepth = realOr(options.modulationDepth, 100);
-		this.modulationFrequency = realOr(options.modulationFrequency, 10);
+		this.frequency.value = realOr(options.frequency, 440);
+		this.modulationDepth.value = realOr(options.modulationDepth, 100);
+		this.modulationFrequency.value =
+			realOr(options.modulationFrequency, 10);
 	}
 
 	get context(): AudioContext {
@@ -56,25 +57,16 @@ export class ModulatedOscillator {
 		return this.oscillator.channelInterpretation;
 	}
 
-	get frequency(): number {
-		return this.oscillator.frequency.value;
-	}
-	set frequency(value: number) {
-		this.oscillator.frequency.value = value;
+	get frequency(): AudioParam {
+		return this.oscillator.frequency;
 	}
 
-	get modulationDepth(): number {
-		return this.gainNode.gain.value;
-	}
-	set modulationDepth(value: number) {
-		this.gainNode.gain.value = value;
+	get modulationDepth(): AudioParam {
+		return this.gainNode.gain;
 	}
 
-	get modulationFrequency(): number {
-		return this.modulator.frequency.value;
-	}
-	set modulationFrequency(value: number) {
-		this.modulator.frequency.value = value;
+	get modulationFrequency(): AudioParam {
+		return this.modulator.frequency;
 	}
 
 	start(): void {
@@ -99,5 +91,11 @@ export class ModulatedOscillator {
 
 	disconnect(): void {
 		this.oscillator.disconnect();
+	}
+
+	cancelScheduledValues(time: number): void {
+		this.oscillator.frequency.cancelScheduledValues(time);
+		this.gainNode.gain.cancelScheduledValues(time);
+		this.modulator.frequency.cancelScheduledValues(time);
 	}
 }

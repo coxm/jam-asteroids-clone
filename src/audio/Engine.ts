@@ -112,13 +112,13 @@ export class Engine {
 			this.gainNode.gain.value = state.gain;
 		}
 		if (state.frequency !== undefined) {
-			this.source.frequency = state.frequency;
+			this.source.frequency.value = state.frequency;
 		}
 		if (state.modulationDepth !== undefined) {
-			this.source.modulationDepth = state.modulationDepth;
+			this.source.modulationDepth.value = state.modulationDepth;
 		}
 		if (state.modulationFrequency !== undefined) {
-			this.source.modulationFrequency = state.modulationFrequency;
+			this.source.modulationFrequency.value = state.modulationFrequency;
 		}
 	}
 
