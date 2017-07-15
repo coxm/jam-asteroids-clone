@@ -38,7 +38,6 @@ export const defaults: GunOptions = {
 export class Gun {
 	readonly options: GunOptions;
 
-	private isFiring: boolean = false;
 	private readonly oscillator: OscillatorNode;
 	private readonly gainNode: GainNode;
 
@@ -52,20 +51,14 @@ export class Gun {
 	}
 
 	fire(): void {
-		if (this.isFiring) {
-			return;
-		}
-		this.isFiring = true;
-
 		const now = this.oscillator.context.currentTime;
 		this.oscillator.detune.cancelScheduledValues(now);
 		this.oscillator.frequency.cancelScheduledValues(now);
 		this.gainNode.gain.cancelScheduledValues(now);
-		const currentTime: number = this.gainNode.context.currentTime;
+		let time: number = this.gainNode.context.currentTime;
 		for (const interval of this.options.intervals!) {
-			this.queue(currentTime, interval);
+			this.queueAt(time += interval.time, interval);
 		}
-		this.isFiring = false;
 	}
 
 	connect<T extends AudioNode>(
@@ -82,8 +75,7 @@ export class Gun {
 		this.gainNode.disconnect();
 	}
 
-	private queue(from: number, interval: GunInterval): void {
-		const time = from + interval.time;
+	private queueAt(time: number, interval: GunInterval): void {
 		if (interval.detune !== undefined) {
 			this.oscillator.detune.linearRampToValueAtTime(
 				interval.detune, time);
