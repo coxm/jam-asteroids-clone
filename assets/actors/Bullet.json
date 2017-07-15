@@ -8,8 +8,8 @@
 			"angularDamping": 0,
 			"shapes": [
 				{
-					"type": "particle",
-					"radius": 1,
+					"type": "circle",
+					"radius": 6,
 					"collisionGroup": "bullets",
 					"collisionMask": "*"
 				}
