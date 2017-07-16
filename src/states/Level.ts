@@ -86,6 +86,7 @@ export class Level extends State {
 	private score: {display: PIXI.Text; value: number; changed: boolean;};
 	private actors: Map<symbol, actors.Actor>;
 	private aliased = new Map<string, actors.Actor>();
+	private toKill: actors.Actor[] = [];
 	private bodyOwners = new WeakMap<p2.Body, actors.Actor>();
 	private world: p2.World;
 	private contacts: ContactManager;
@@ -243,7 +244,6 @@ export class Level extends State {
 		}
 
 		this.world.step(UPDATE_FREQ_HZ);
-		const toKill: actors.Actor[] = [];
 		for (let actor of this.actors.values()) {
 			const cmp = actor.cmp;
 			const pos = cmp.phys.body.position;
@@ -251,7 +251,7 @@ export class Level extends State {
 				wrapPosition(pos);
 			}
 			else if (!render.camera.inRange(pos[0], pos[1])) {
-				toKill.push(actor);
+				this.toKill.push(actor);
 				continue;
 			}
 			cmp.anim.renderable.position.set(pos[0], pos[1]);
@@ -263,9 +263,10 @@ export class Level extends State {
 			);
 		}
 
-		for (let actor of toKill) {
+		for (let actor of this.toKill) {
 			this.deleteActor(actor);
 		}
+		this.toKill.length = 0;
 
 		if (this.score.changed) {
 			this.score.display.text = `Score: ${this.score.value}`;
@@ -299,8 +300,7 @@ export class Level extends State {
 	}
 
 	private onActorHasNoHealth(ev: events.Event): void {
-		const actor = this.actorAt(ev.data.actorID);
-		this.deleteActor(actor);
+		this.toKill.push(this.actorAt(ev.data.actorID));
 	}
 
 	private onGunFired(ev: events.Event): void {
@@ -382,7 +382,7 @@ export class Level extends State {
 		this.actors.delete(actor.id);
 		if (actor.alias) {
 			this.aliased.delete(actor.alias);
-			if (actor.alias.startsWith('Player')) {
+			if (isPlayer(actor)) {
 				// Mark failed so we can complete this update cycle before
 				// clearing the level.
 				this.failed = true;
