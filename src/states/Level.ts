@@ -12,7 +12,7 @@ import * as actors from 'game/actors/index';
 import {context as audioContext} from 'game/audio/index';
 import {InputDriver} from 'game/actors/components/InputDriver';
 import {CollisionGroup} from 'game/physics';
-import {LevelAudio} from 'game/audio/LevelAudio';
+import {LevelAudio, LevelAudioOptions} from 'game/audio/LevelAudio';
 
 
 /** The data found in a level's JSON file. */
@@ -27,6 +27,7 @@ export interface LevelPreloadData {
 	readonly title: string;
 	readonly initialActors: actors.ActorDef[];
 	readonly dynamicActors: {[key: string]: actors.ActorDef;};
+	readonly audio: LevelAudioOptions;
 }
 
 
@@ -68,6 +69,10 @@ function wrapPosition(pos: AnyVec2): void {
 const expandActorDef =
 	(partial: actors.PartialActorDef): Promise<actors.ActorDef> =>
 		load.actors.fromPartialDef(partial);
+
+
+/** Check if an actor is a player. */
+const isPlayer = (actor: actors.Actor): boolean => !!actor.cmp.input;
 
 
 export class Level extends State {
@@ -140,12 +145,14 @@ export class Level extends State {
 			'Bullet.png'
 		);
 		const raw = await load.files.json<RawLevelJSON>(`levels/${this.name}`);
+		const audio = await load.files.json<LevelAudioOptions>('config/audio');
 		return {
 			title: raw.title,
 			initialActors: await Promise.all(raw.actors.map(expandActorDef)),
 			dynamicActors: {
 				Bullet: await expandActorDef({depends: 'Bullet'}),
 			},
+			audio: audio,
 		};
 	}
 
@@ -160,7 +167,8 @@ export class Level extends State {
 		}
 		this.audio = new LevelAudio(
 			audioContext,
-			this.players.map(player => player.id)
+			this.players.map(player => player.id),
+			data.audio
 		);
 	}
 
@@ -276,10 +284,17 @@ export class Level extends State {
 		actorA.cmp.health.subtract(1);
 		actorB.cmp.health.subtract(1);
 
-		// If exactly one is a projectile, update the score.
-		if (!actorA.cmp.projectile !== !actorB.cmp.projectile) {
-			this.score.value += 10;
-			this.score.changed = true;
+		const aIsProjectile: boolean = !!actorA.cmp.projectile;
+		const bIsProjectile: boolean = !!actorB.cmp.projectile;
+		if (aIsProjectile || bIsProjectile) {
+			this.audio!.onProjectileHit();
+			if (aIsProjectile !== bIsProjectile) {
+				this.score.changed = true;
+				this.score.value += 10;
+			}
+		}
+		else {
+			this.audio!.onCollision();
 		}
 	}
 
@@ -319,7 +334,7 @@ export class Level extends State {
 		shape.collisionMask &= ~CollisionGroup.players;
 		setTimeout((): void => {
 			shape.collisionMask = mask;
-		}, 200);
+		}, 100);
 	}
 
 	private createActor(def: actors.ActorDef): actors.Actor {
@@ -345,7 +360,7 @@ export class Level extends State {
 			:	this.stages.main
 		).addChild(actor.cmp.anim.renderable);
 
-		if (def.depends && def.depends.includes("PlayerBase")) {
+		if (isPlayer(actor)) {
 			this.players.push(actor);
 		}
 		return actor;

@@ -1,12 +1,15 @@
 import * as events from 'game/events';
 
 import {Engine} from './Engine';
-import {Gun} from './Gun';
+import {Laser, LaserOptions} from './Laser';
+import {Exploder, ExploderOptions} from './Exploder';
 
 
 export interface LevelAudioOptions {
 	readonly gunGain: number;
 	readonly engineGain: number;
+	readonly collisions?: ExploderOptions;
+	readonly laserHits?: LaserOptions;
 }
 
 
@@ -16,39 +19,76 @@ export const defaults: LevelAudioOptions = {
 };
 
 
+interface Effect {
+	play(): Promise<void>;
+	connect(node: AudioNode, outCh?: number, inCh?: number): void;
+	disconnect(): void;
+}
+
+
+class EffectPool {
+	private readonly list: Effect[] = [];
+
+	constructor(private readonly create: () => Effect) {
+	}
+
+	play(dest: AudioNode): void {
+		const effect = this.list.pop() || this.create();
+		effect.connect(dest);
+		effect.play().then((): void => {
+			effect!.disconnect();
+			this.list.push(effect);
+		});
+	}
+}
+
+
 export class LevelAudio {
 	private readonly eventsID: symbol = Symbol('LevelAudio');
 	private readonly merger: ChannelMergerNode;
 	private readonly master: GainNode;
-	private readonly guns: Gun[];
+	private readonly cannons: Laser[];
 	private readonly engines: Engine[];
+	private readonly options: LevelAudioOptions;
+	private readonly collisions: EffectPool;
+	private readonly laserHits: EffectPool;
 
 	constructor(
 		context: AudioContext,
 		private readonly shipIDs: symbol[],
 		options?: LevelAudioOptions
 	) {
-		Object.assign(window, {levelAudio: this});
-		options = Object.assign({}, options, defaults);
+		this.options = Object.assign({}, options, defaults);
 
 		const numActors = shipIDs.length;
 		const numAudioNodes = numActors * 2;
-		this.guns = [];
+		this.cannons = [];
 		this.engines = [];
 		this.merger = context.createChannelMerger(numAudioNodes);
 		for (let i = 0, input = 0; i < numActors; ++i) {
 			const engine = new Engine(context);
-			engine.gain.value = 0.2;
+			engine.gain.value = this.options.engineGain;
 			engine.start();
 			engine.connect(this.merger, 0, input++);
 			this.engines.push(engine);
 
-			const gun = new Gun(context, {maxGain: 0.4});
+			const gun = new Laser(context, {maxGain: this.options.gunGain});
 			gun.connect(this.merger, 0, input++);
-			this.guns.push(gun);
+			this.cannons.push(gun);
 		}
 		this.master = context.createGain();
 		this.merger.connect(this.master).connect(context.destination);
+
+		this.collisions = new EffectPool(
+			() => new Exploder(context, this.options!.collisions!)
+		);
+		this.laserHits = new EffectPool(
+			() => new Laser(context, this.options!.laserHits!)
+		);
+	}
+
+	get context(): AudioContext {
+		return this.master.context;
 	}
 
 	attach(manager: events.Manager): void {
@@ -84,7 +124,15 @@ export class LevelAudio {
 	onGunFired(ev: events.Event): void {
 		const index = this.shipIDs.indexOf(ev.data.actorID);
 		if (index >= 0) {
-			this.guns[index].fire()
+			this.cannons[index].play()
 		}
+	}
+
+	onCollision(): void {
+		this.collisions.play(this.master);
+	}
+
+	onProjectileHit(): void {
+		this.laserHits.play(this.master);
 	}
 }

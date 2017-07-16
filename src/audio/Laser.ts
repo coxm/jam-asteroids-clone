@@ -1,10 +1,13 @@
-export interface GunOptions {
+import {sleep} from 'jam/util/misc';
+
+
+export interface LaserOptions {
 	readonly maxGain: number;
-	readonly intervals?: GunInterval[];
+	readonly intervals?: LaserInterval[];
 }
 
 
-export interface GunInterval {
+export interface LaserInterval {
 	time: number;
 	gain?: number;
 	detune?: number;
@@ -12,7 +15,7 @@ export interface GunInterval {
 }
 
 
-export const defaults: GunOptions = {
+export const defaults: LaserOptions = {
 	maxGain: 0.5,
 	intervals: [
 		{
@@ -35,13 +38,13 @@ export const defaults: GunOptions = {
 };
 
 
-export class Gun {
-	readonly options: GunOptions;
+export class Laser {
+	readonly options: LaserOptions;
 
 	private readonly oscillator: OscillatorNode;
 	private readonly gainNode: GainNode;
 
-	constructor(context: AudioContext, options?: GunOptions) {
+	constructor(context: AudioContext, options?: LaserOptions) {
 		this.options = Object.assign({}, defaults, options);
 		this.oscillator = context.createOscillator();
 		this.gainNode = context.createGain();
@@ -50,7 +53,7 @@ export class Gun {
 		this.oscillator.start();
 	}
 
-	fire(): void {
+	play(): Promise<void> {
 		const now = this.oscillator.context.currentTime;
 		this.oscillator.detune.cancelScheduledValues(now);
 		this.oscillator.frequency.cancelScheduledValues(now);
@@ -59,6 +62,7 @@ export class Gun {
 		for (const interval of this.options.intervals!) {
 			this.queueAt(time += interval.time, interval);
 		}
+		return sleep(time);
 	}
 
 	connect<T extends AudioNode>(
@@ -75,7 +79,7 @@ export class Gun {
 		this.gainNode.disconnect();
 	}
 
-	private queueAt(time: number, interval: GunInterval): void {
+	private queueAt(time: number, interval: LaserInterval): void {
 		if (interval.detune !== undefined) {
 			this.oscillator.detune.linearRampToValueAtTime(
 				interval.detune, time);
