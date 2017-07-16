@@ -58,6 +58,7 @@ export class Laser {
 		this.oscillator.detune.cancelScheduledValues(now);
 		this.oscillator.frequency.cancelScheduledValues(now);
 		this.gainNode.gain.cancelScheduledValues(now);
+		this.gainNode.gain.value = 0;
 		let time: number = this.gainNode.context.currentTime;
 		for (const interval of this.options.intervals!) {
 			this.queueAt(time += interval.time, interval);

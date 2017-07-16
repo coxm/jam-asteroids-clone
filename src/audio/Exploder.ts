@@ -72,6 +72,7 @@ export class Exploder {
 		this.filter.frequency.cancelScheduledValues(time);
 		this.filter.Q.cancelScheduledValues(time);
 		this.gainNode.gain.cancelScheduledValues(time);
+		this.gainNode.gain.value = 0;
 		for (let state of this.options.states!) {
 			this.queueAt(time += state.time, state);
 		}
