@@ -1,0 +1,42 @@
+{
+	"cmp": [
+		{
+			"factory": "physics",
+			"type": "dynamic",
+			"mass": 1,
+			"damping": 0,
+			"angularDamping": 0,
+			"shapes": [
+				{
+					"type": "circle",
+					"radius": 32,
+					"collisionGroup": "asteroids",
+					"collisionMask": "*"
+				}
+			]
+		},
+		{
+			"factory": "animated",
+			"initial": "basic",
+			"stopped": true,
+			"texture": "AsteroidLarge.png",
+			"frameWidth": 64,
+			"frameHeight": 64,
+			"frameCount": 1,
+			"animations": {
+				"basic": {
+					"frames": [0]
+				}
+			}
+		},
+		{
+			"factory": "asteroidDriver",
+			"angularVelocity": 0.5,
+			"angle": 1.1239
+		},
+		{
+			"factory": "health",
+			"hitpoints": 5
+		}
+	]
+}
