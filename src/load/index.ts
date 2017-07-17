@@ -1,7 +1,7 @@
 import {TextureLoader} from 'jam/load/TextureLoader';
-import {Loader as ActorLoader} from 'jam/actors/Loader';
 
 import {CachedFileLoader} from './CachedFileLoader';
+import {CachedActorLoader} from './CachedActorLoader';
 
 
 export const files = new CachedFileLoader({
@@ -10,7 +10,7 @@ export const files = new CachedFileLoader({
 });
 
 
-export const actors = new ActorLoader({
+export const actors = new CachedActorLoader({
 	baseUrl: 'assets/actors',
 	suffix: '.json!text.js',
 });
