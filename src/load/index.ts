@@ -1,7 +1,7 @@
 import {TextureLoader} from 'jam/load/TextureLoader';
 import {Loader as ActorLoader} from 'jam/actors/Loader';
 
-import {CachedFileLoader} from './FileLoader';
+import {CachedFileLoader} from './CachedFileLoader';
 
 
 export const files = new CachedFileLoader({

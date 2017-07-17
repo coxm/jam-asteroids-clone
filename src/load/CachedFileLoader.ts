@@ -1,8 +1,6 @@
 import {FileLoader} from 'jam/load/FileLoader';
-import {cacheUnderFirstArgument} from 'jam/load/cache';
 
-
-const cacheFiles = cacheUnderFirstArgument('cache');
+import {cache} from './cache';
 
 
 export class CachedFileLoader extends FileLoader {
@@ -10,13 +8,13 @@ export class CachedFileLoader extends FileLoader {
 	readonly cache: Map<string, any>;
 
 	/** Load a plaintext file. */
-	@cacheFiles
+	@cache
 	text(relpath: string): Promise<string> {
 		return super.text(relpath);
 	}
 
 	/** Load a JSON file. */
-	@cacheFiles
+	@cache
 	json<T>(relpath: string): Promise<T> {
 		return super.json(relpath);
 	}
