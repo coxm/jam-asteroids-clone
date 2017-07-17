@@ -5,7 +5,7 @@ import {Laser, LaserOptions} from './Laser';
 import {Exploder, ExploderOptions} from './Exploder';
 
 
-export interface LevelAudioOptions {
+export interface ManagerOptions {
 	readonly gunGain: number;
 	readonly engineGain: number;
 	readonly collisions?: ExploderOptions;
@@ -13,7 +13,7 @@ export interface LevelAudioOptions {
 }
 
 
-export const defaults: LevelAudioOptions = {
+export const defaults: ManagerOptions = {
 	gunGain: 0.2,
 	engineGain: 0.3,
 };
@@ -43,20 +43,20 @@ class EffectPool {
 }
 
 
-export class LevelAudio {
-	private readonly eventsID: symbol = Symbol('LevelAudio');
+export class Manager {
+	private readonly eventsID: symbol = Symbol('Manager');
 	private readonly merger: ChannelMergerNode;
 	private readonly master: GainNode;
 	private readonly cannons: Laser[];
 	private readonly engines: Engine[];
-	private readonly options: LevelAudioOptions;
+	private readonly options: ManagerOptions;
 	private readonly collisions: EffectPool;
 	private readonly laserHits: EffectPool;
 
 	constructor(
 		context: AudioContext,
 		private readonly shipIDs: symbol[],
-		options?: LevelAudioOptions
+		options?: ManagerOptions
 	) {
 		this.options = Object.assign({}, options, defaults);
 

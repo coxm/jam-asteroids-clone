@@ -12,7 +12,10 @@ import * as actors from 'game/actors/index';
 import {context as audioContext} from 'game/audio/index';
 import {InputDriver} from 'game/actors/components/InputDriver';
 import {CollisionGroup} from 'game/physics';
-import {LevelAudio, LevelAudioOptions} from 'game/audio/LevelAudio';
+import {
+	Manager as AudioManager,
+	ManagerOptions as AudioManagerOptions
+} from 'game/audio/Manager';
 
 
 /** The data found in a level's JSON file. */
@@ -27,7 +30,7 @@ export interface LevelPreloadData {
 	readonly title: string;
 	readonly initialActors: actors.ActorDef[];
 	readonly dynamicActors: {[key: string]: actors.ActorDef;};
-	readonly audio: LevelAudioOptions;
+	readonly audio: AudioManagerOptions;
 }
 
 
@@ -96,7 +99,7 @@ export class Level extends State {
 	private failed: boolean = false;
 	private readonly players: actors.Actor[] = [];
 
-	private audio: LevelAudio | null = null;
+	private audio: AudioManager | null = null;
 
 	constructor(name: string) {
 		super(name);
@@ -146,7 +149,8 @@ export class Level extends State {
 			'Bullet.png'
 		);
 		const raw = await load.files.json<RawLevelJSON>(`levels/${this.name}`);
-		const audio = await load.files.json<LevelAudioOptions>('config/audio');
+		const audio = await load.files.json<AudioManagerOptions>(
+			'config/audio');
 		return {
 			title: raw.title,
 			initialActors: await Promise.all(raw.actors.map(expandActorDef)),
@@ -166,7 +170,7 @@ export class Level extends State {
 		for (let def of data.initialActors) {
 			this.createActor(def);
 		}
-		this.audio = new LevelAudio(
+		this.audio = new AudioManager(
 			audioContext,
 			this.players.map(player => player.id),
 			data.audio
