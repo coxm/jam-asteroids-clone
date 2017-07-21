@@ -30,6 +30,7 @@
 		}
 	},
 	"include": [
+		"../defs/*.d.ts"
 	],
 	"files": [
 		"../node_modules/jam/defs/lib.d.ts",

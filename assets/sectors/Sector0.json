@@ -1,0 +1,8 @@
+{
+	"actors": [
+		{
+			"depends": "Asteroid",
+			"position": [20, 20]
+		}
+	]
+}

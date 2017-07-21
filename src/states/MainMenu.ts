@@ -1,6 +1,7 @@
 import {State} from 'jam/states/State';
 
-import * as states from 'game/states/index';
+import * as settings from 'game/settings';
+import * as states from './index';
 
 
 export interface MenuPreloadData {
@@ -8,11 +9,13 @@ export interface MenuPreloadData {
 }
 
 
-const play1P = (): void => {
-	states.manager.trigger(states.Trigger.play1P);
-};
-const play2P = (): void => {
-	states.manager.trigger(states.Trigger.play2P);
+const playGame = (ev: Event): void => {
+	const numPlayers = +(ev.target as HTMLButtonElement).dataset.playerCount!;
+	if (Number.isNaN(numPlayers)) {
+		throw new Error("Invalid number of players");
+	}
+	settings.players.count = numPlayers;
+	states.manager.trigger(states.Trigger.playGame);
 };
 
 
@@ -28,10 +31,11 @@ export class MainMenu extends State {
 				.importNode(template.content, true)
 				.getElementById('main-menu-container')
 		) as HTMLElement;
-		this.element.querySelector('#btn-1p')!.addEventListener(
-			'click', play1P);
-		this.element.querySelector('#btn-2p')!.addEventListener(
-			'click', play2P);
+
+		const buttons = this.element.querySelectorAll('.play-game');
+		for (let i = 0, len = buttons.length; i < len; ++i) {
+			buttons[i].addEventListener('click', playGame);
+		}
 	}
 
 	protected doStart(data: MenuPreloadData): void {

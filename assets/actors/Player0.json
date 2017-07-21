@@ -1,11 +1,11 @@
 {
-	"alias": "Player2",
+	"alias": "Player0",
 	"depends": ["PlayerBase", "HasNormalGun"],
-	"position": [-40, -40],
+	"position": [40, 40],
 	"cmp": [
 		{
 			"factory": "input",
-			"type": "numpad"
+			"type": "arrows"
 		}
 	]
 }

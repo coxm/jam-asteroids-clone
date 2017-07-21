@@ -1,6 +1,6 @@
 import {State} from 'jam/states/State';
 
-import {stage} from 'game/render';
+import {stages} from 'game/render';
 import {textures} from 'game/load/index';
 
 
@@ -20,10 +20,10 @@ export class Splash extends State {
 	}
 
 	protected doStart(texture: PIXI.Texture): void {
-		stage.addChild(this.background!);
+		stages.hud.addChild(this.background!);
 	}
 
 	protected doStop(): void {
-		stage.removeChild(this.background!);
+		stages.hud.removeChild(this.background!);
 	}
 }

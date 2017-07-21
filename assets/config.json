@@ -1,0 +1,60 @@
+{
+	"updateFrequencyHz": 0.03333333333333333,
+	"viewport": {
+		"outerBorder": [20, 20],
+		"innerMargin": [10, 10]
+	},
+	"audio": {
+		"gunGain": 0.2,
+		"engineGain": 0.3,
+		"collisions": {
+			"states": [
+				{
+					"time": 0,
+					"frequency": 300,
+					"gain": 0
+				},
+				{
+					"time": 0.001,
+					"frequency": 300,
+					"gain": 2
+				},
+				{
+					"time": 0.2,
+					"frequency": 200,
+					"gain": 0.4
+				},
+				{
+					"time": 0.4,
+					"frequency": 100,
+					"gain": 0
+				}
+			]
+		},
+		"laserHits": {
+			"maxGain": 0.5,
+			"intervals": [
+				{
+					"time": 0,
+					"frequency": 300,
+					"gain": 0
+				},
+				{
+					"time": 0.001,
+					"frequency": 300,
+					"gain": 1
+				},
+				{
+					"time": 0.2,
+					"frequency": 200,
+					"gain": 0.4
+				},
+				{
+					"time": 0.4,
+					"frequency": 100,
+					"gain": 0
+				}
+			]
+		}
+	}
+}

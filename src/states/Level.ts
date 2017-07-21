@@ -172,8 +172,9 @@ export class Level extends State {
 		}
 		this.audio = new AudioManager(
 			audioContext,
-			this.players.map(player => player.id),
-			data.audio
+			Object.assign({
+				shipIDs: this.players.map(player => player.id),
+			}, data.audio)
 		);
 	}
 

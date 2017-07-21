@@ -10,6 +10,7 @@ export interface ManagerOptions {
 	readonly engineGain: number;
 	readonly collisions?: ExploderOptions;
 	readonly laserHits?: LaserOptions;
+	readonly shipIDs?: symbol[];
 }
 
 
@@ -45,50 +46,42 @@ class EffectPool {
 
 export class Manager {
 	private readonly eventsID: symbol = Symbol('Manager');
-	private readonly merger: ChannelMergerNode;
+	private merger: ChannelMergerNode | null = null;
 	private readonly master: GainNode;
-	private readonly cannons: Laser[];
-	private readonly engines: Engine[];
+	private cannons: Laser[] = [];
+	private engines: Engine[] = [];
+	private shipIDs: symbol[];
 	private readonly options: ManagerOptions;
 	private readonly collisions: EffectPool;
 	private readonly laserHits: EffectPool;
 
-	constructor(
-		context: AudioContext,
-		private readonly shipIDs: symbol[],
-		options?: ManagerOptions
-	) {
+	constructor(context: AudioContext, options?: ManagerOptions) {
 		this.options = Object.assign({}, options, defaults);
-
-		const numActors = shipIDs.length;
-		const numAudioNodes = numActors * 2;
-		this.cannons = [];
-		this.engines = [];
-		this.merger = context.createChannelMerger(numAudioNodes);
-		for (let i = 0, input = 0; i < numActors; ++i) {
-			const engine = new Engine(context);
-			engine.gain.value = this.options.engineGain;
-			engine.start();
-			engine.connect(this.merger, 0, input++);
-			this.engines.push(engine);
-
-			const gun = new Laser(context, {maxGain: this.options.gunGain});
-			gun.connect(this.merger, 0, input++);
-			this.cannons.push(gun);
-		}
 		this.master = context.createGain();
-		this.merger.connect(this.master).connect(context.destination);
-
 		this.collisions = new EffectPool(
 			() => new Exploder(context, this.options!.collisions!)
 		);
 		this.laserHits = new EffectPool(
 			() => new Laser(context, this.options!.laserHits!)
 		);
+		if (this.options.shipIDs) {
+			this.doReset(this.options.shipIDs);
+		}
+		else {
+			this.shipIDs = [];
+		}
 	}
 
 	get context(): AudioContext {
 		return this.master.context;
+	}
+
+	init(shipIDs: symbol[]): void {
+		this.master.disconnect();
+		if (this.merger) {
+			this.merger.disconnect();
+		}
+		this.doReset(shipIDs);
 	}
 
 	attach(manager: events.Manager): void {
@@ -103,7 +96,7 @@ export class Manager {
 
 	detach(manager: events.Manager): void {
 		manager.unbatch(this.eventsID);
-		this.master.gain.value = 0;
+		this.master.gain.linearRampToValueAtTime(0, 0.1);
 		this.master.disconnect();
 	}
 
@@ -134,5 +127,34 @@ export class Manager {
 
 	onProjectileHit(): void {
 		this.laserHits.play(this.master);
+	}
+
+	private doReset(shipIDs: symbol[]): void {
+		const numActors = shipIDs.length;
+		const numAudioNodes = numActors * 2;
+		const context = this.context;
+		const merger = context.createChannelMerger(Math.max(numAudioNodes, 1));
+		const cannons: Laser[] = [];
+		const engines: Engine[] = [];
+		for (let i = 0, input = 0; i < numActors; ++i) {
+			const engine = new Engine(context);
+			engine.gain.value = this.options.engineGain;
+			engine.start();
+			engine.connect(merger, 0, input++);
+			engines.push(engine);
+
+			const gun = new Laser(context, {maxGain: this.options.gunGain});
+			gun.connect(merger, 0, input++);
+			cannons.push(gun);
+		}
+
+		if (this.merger) {
+			this.merger.disconnect();
+		}
+		this.merger = merger;
+		this.merger.connect(this.master);
+		this.shipIDs = shipIDs;
+		this.cannons = cannons;
+		this.engines = engines;
 	}
 }

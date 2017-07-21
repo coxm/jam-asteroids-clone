@@ -7,13 +7,13 @@ import * as jamEvents from 'jam/events/Manager';
  * Insert new categories here to define new event types.
  */
 export const enum Category {
-	physNormalContact,  // Normal physical contact.
+	collision,  // Normal physical contact.
 	actorHasNoHealth,  // Actor has no health remaining.
 	gunFired,  // A gun was fired.
-	levelSuccess,  // Level completed.
-	levelFailure,  // Level failed.
+	sectorEntered,  // A sector has been entered.
 	engineStarted,  // An engine started.
 	engineStopped,  // An engine stopped.
+	newSector,  // A request to create actors.
 }
 
 
@@ -25,6 +25,11 @@ export type EventData = any;
 export type Event = jamEvents.Event<Category, EventData>;
 
 
+/** The type of handler definitions passed to the event manager. */
+export type HandlerItem = jamEvents.HandlerItem<Category, EventData>;
+
+
+/** The type of the event manager. */
 export type Manager = jamEvents.Manager<Category, EventData>;
 
 

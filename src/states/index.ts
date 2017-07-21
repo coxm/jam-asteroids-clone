@@ -1,11 +1,13 @@
+import {noop} from 'jam/util/misc';
 import {State, resume, reset} from 'jam/states/State';
 export {resume} from 'jam/states/State';
 import {Relation} from 'jam/states/Relation';
 import {Manager, TriggerEvent} from 'jam/states/Manager';
 
-import {Level} from './Level';
+import {Sector} from './Sector';
 import {Splash} from './Splash';
 import {MainMenu} from './MainMenu';
+import {Environment} from './Environment';
 
 
 /**
@@ -15,10 +17,10 @@ import {MainMenu} from './MainMenu';
  * trigger configuration.
  */
 export const enum Trigger {
-	play1P,
-	play2P,
+	playGame,
 	success,
 	failure,
+	startChild,
 }
 
 
@@ -31,13 +33,18 @@ export const enum Trigger {
 export const manager = new Manager<State, Trigger>({
 	// This function gets called before `manager` acts on any trigger. It
 	// pauses, detaches and stops the old state.
-	preTrigger: (event: TriggerEvent<State, Trigger>): void => {
-		reset(event.old)
-		console.log('Closing state', event.old.name);
+	preTrigger(event: TriggerEvent<State, Trigger>): void {
+		if (event.trigger === Trigger.startChild) {
+			console.log('Descending', event.old.name, '->', event.new.name);
+		}
+		else {
+			reset(event.old)
+			console.log('Closing state', event.old.name);
+		}
 	},
 	// This function gets called after `manager` acts on any trigger. It
 	// starts up/resumes the new state.
-	postTrigger: (event: TriggerEvent<State, Trigger>): void => {
+	postTrigger(event: TriggerEvent<State, Trigger>): void {
 		resume(event.new);
 		console.log('Started state', event.new.name);
 	},
@@ -56,53 +63,70 @@ const restartOnFailure = {
 	exit: reset,
 	rel: Relation.same,
 };
-/** State transition: start the first 1p mission. */
-const start1pMissionsOnSelect = {
-	trigger: Trigger.play1P,
+/** State transition: start playing the game. */
+const playGame = {
+	trigger: Trigger.playGame,
 	exit: (state: State): void => state.detach(),
-	id: '1pLevel0',
+	rel: Relation.child,
 };
-/** State transition: start the first 2p mission. */
-const start2pMissionsOnSelect = {
-	trigger: Trigger.play2P,
-	exit: (state: State): void => state.detach(),
-	id: '2pLevel0',
+/** State transition: start first sector. */
+const startFirstSector = {
+	trigger: Trigger.startChild,
+	exit: noop,  // Leave the parent state intact.
+	rel: Relation.child,
 };
+
+
+/** The transitions available for levels. */
+const levelTransitions = [advanceOnSuccess, restartOnFailure];
 
 
 // Configure our state tree:
-// MainMenu (root state)
-//   |-- 1pMissions
-//   |   |-- 1pLevel0
-//   |   |-- GameComplete
-//   |-- 2pMissions
-//       |-- 2pLevel0
-//       |-- GameComplete
+//  Root (the root state)
+//  |-- WelcomeSplash (a splash screen welcoming the player)
+//  |-- MainMenu (the main menu state)
+//      |-- Environment (the gameplay state; this has been imported above)
+//      |   |-- Sector0
+//      |   |-- Sector1
+//      |   |-- ...
+//      |-- GameComplete
+//
+const root = new State('Root');
+const welcomeSplash = new Splash('WelcomeSplash', 'MadeForCoopJam.png');
 const gameComplete = new Splash('GameComplete', 'GameComplete.png');
-const mainMenuID = manager.add(new MainMenu('MainMenu'), {
-	alias: 'MainMenu',
-	children: [
-		manager.add(new State('1pMissions'), {
-			alias: '1pMissions',
-			children: [
-				manager.add(new Level('1pLevel0'), {
-					alias: '1pLevel0',
-					transitions: [advanceOnSuccess, restartOnFailure],
-				}),
-				gameComplete,
-			],
-		}),
-		manager.add(new State('2pMissions'), {
-			alias: '2pMissions',
-			children: [
-				manager.add(new Level('2pLevel0'), {
-					alias: '2pLevel0',
-					transitions: [advanceOnSuccess, restartOnFailure],
-				}),
-				gameComplete,
-			],
-		}),
-	],
-	transitions: [start1pMissionsOnSelect, start2pMissionsOnSelect],
+const mainMenu = new MainMenu('MainMenu');
+const environment = new Environment('Environment');
+
+
+/** Add levels by specifying just an index. */
+const addSector = (index: number): number => {
+	const name = 'Sector' + index;
+	return manager.add(new Sector(name), {
+		alias: name,
+		transitions: levelTransitions,
+	});
+};
+
+
+// Add all states to the tree.
+manager.add(environment, {
+	alias: environment.name,
+	children: [0, 1].map(addSector),
+	transitions: [startFirstSector],
 });
-manager.set(mainMenuID);  // Set the initial state.
+manager.add(mainMenu, {
+	alias: mainMenu.name,
+	children: [environment.name],
+	transitions: [playGame],
+});
+manager.add(root, {
+	alias: root.name,
+	children: [
+		welcomeSplash,
+		mainMenu.name,
+		gameComplete
+	],
+});
+
+
+manager.set(mainMenu.name);  // Set the initial state.

@@ -9,7 +9,7 @@
 	<body>
 		<div id="container"></div>
 
-		<script type="text/javascript" src="node_modules/systemjs/dist/system.js"></script>
+		<script type="text/javascript" src="node_modules/systemjs/dist/system.src.js"></script>
 		<script type="text/javascript" src="node_modules/pixi.js/dist/pixi.js"></script>
 		<script type="text/javascript" src="node_modules/p2/build/p2.js"></script>
 		<script type="text/javascript" src="config/system.js"></script>
@@ -18,8 +18,16 @@
 			<div id="main-menu-container" class="hidden">
 				<div id="main-menu" class="menu">
 					<h3>Select number of players</h3>
-					<button type="button" id="btn-1p" class="btn">1</button>
-					<button type="button" id="btn-2p" class="btn">2</button>
+					<button type="button"
+							class="play-game"
+							data-player-count="1">
+						Single player
+					</button>
+					<button type="button"
+							class="play-game"
+							data-player-count="2">
+						Multiplayer
+					</button>
 				</div>
 			</div>
 		</template>

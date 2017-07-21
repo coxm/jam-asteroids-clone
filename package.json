@@ -15,7 +15,7 @@
     "jam": "github:coxm/jam-engine#v16.0.0",
     "p2": "^0.7.1",
     "pixi.js": "4.4.0",
-    "systemjs": "^0.19.37",
+    "systemjs": "^0.20.15",
     "systemjs-plugin-json": "^0.3.0",
     "systemjs-plugin-text": "0.0.9"
   },

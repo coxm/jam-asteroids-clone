@@ -1,8 +1,10 @@
-import {ActorLoader} from 'jam/actors/Loader';
+import {Loader} from 'jam/actors/Loader';
+
+import {ActorDef} from 'game/actors/index';
 import {cache} from './cache';
 
 
-export class CachedActorLoader extends ActorLoader {
+export class CachedActorLoader extends Loader {
 	/** All loaded files will be stored in this cache. */
 	readonly cache: Map<string, any>;
 

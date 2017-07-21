@@ -6,14 +6,23 @@
 
 
 System.config({
-	defaultJSExtensions: true,
+	packages: {
+		assets: {
+			defaultExtension: 'json',
+		},
+		jam: {
+			defaultExtension: 'js',
+		},
+		game: {
+			defaultExtension: 'js',
+		},
+	},
 	map: {
 		"systemjs": "node_modules/systemjs/dist/system.js",
 		"text.js": "node_modules/systemjs-plugin-text/text.js",
 		"json.js": "node_modules/systemjs-plugin-json/json.js",
 		"game": "build/js/game",
 		"jam": "build/js/jam",
-		"assets": "assets",
 		"p2": "node_modules/p2/build/p2.js",
 	},
 	meta: {
@@ -21,7 +30,10 @@ System.config({
 		p2: {
 			format: 'global',
 			exports: 'p2',
-		}
+		},
+		"assets/*.json": {
+			loader: 'json.js',
+		},
 	},
 	transpiler: null,
 });
