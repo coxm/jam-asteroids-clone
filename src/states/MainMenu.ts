@@ -94,11 +94,13 @@ export class MainMenu extends State {
 	}
 
 	protected doStart(data: MenuPreloadData): void {
+		document.querySelector('canvas')!.classList.add('hidden');
 		this.element!.classList.remove('hidden');
 	}
 
 	protected doStop(): void {
 		this.element!.classList.add('hidden');
 		document.getElementById('container')!.removeChild(this.element!);
+		document.querySelector('canvas')!.classList.remove('hidden');
 	}
 }
