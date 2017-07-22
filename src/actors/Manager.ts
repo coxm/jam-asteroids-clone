@@ -1,7 +1,9 @@
 import config from 'assets/config';
 
 import {camera} from 'game/render';
+import * as events from 'game/events';
 import * as render from 'game/render';
+import * as states from 'game/states/index';
 import * as physics from 'game/physics';
 
 import {Actor, ActorDef, factory} from './index';
@@ -87,7 +89,14 @@ export class Manager {
 		for (let i = 0, len = this.toKill.length; i < len; ++i) {
 			this.doDelete(this.toKill[i]);
 		}
-		this.toKill.length = 0;
+
+		if (this.toKill.length > 0) {
+			if (this.byID.size === this.players.length) {
+				events.manager.fire(events.Category.sectorComplete, null);
+				states.manager.trigger(states.Trigger.sectorComplete);
+			}
+			this.toKill.length = 0;
+		}
 	}
 
 	/** Lookup an actor by ID or alias. */

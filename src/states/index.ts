@@ -20,7 +20,7 @@ import {Environment} from './Environment';
  */
 export const enum Trigger {
 	playGame,
-	success,
+	sectorComplete,
 	failure,
 	startChild,
 }
@@ -53,9 +53,9 @@ export const manager = new Manager<State, Trigger>({
 });
 
 
-/** State transition: advance to the next level on 'success'. */
+/** State transition: advance to the next level on 'sectorComplete'. */
 const advanceOnSuccess = {
-	trigger: Trigger.success,
+	trigger: Trigger.sectorComplete,
 	exit: (state: State): void => state.destroy(),
 	rel: Relation.sibling,
 };

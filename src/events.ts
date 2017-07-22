@@ -11,6 +11,7 @@ export const enum Category {
 	actorHasNoHealth,  // Actor has no health remaining.
 	gunFired,  // A gun was fired.
 	sectorEntered,  // A sector has been entered.
+	sectorComplete,  // A sector has been completed.
 	engineStarted,  // An engine started.
 	engineStopped,  // An engine stopped.
 	newSector,  // A request to create actors.
