@@ -4,6 +4,8 @@ export {resume} from 'jam/states/State';
 import {Relation} from 'jam/states/Relation';
 import {Manager, TriggerEvent} from 'jam/states/Manager';
 
+import config from 'assets/config';
+
 import {Sector} from './Sector';
 import {Splash} from './Splash';
 import {MainMenu} from './MainMenu';
@@ -111,7 +113,13 @@ const addSector = (index: number): number => {
 // Add all states to the tree.
 manager.add(environment, {
 	alias: environment.name,
-	children: [0, 1].map(addSector),
+	children: ((): number[] => {
+		const ids: number[] = [];
+		for (let i = config.sectors.from; i <= config.sectors.to; ++i) {
+			ids.push(addSector(i));
+		}
+		return ids;
+	})(),
 	transitions: [startFirstSector],
 });
 manager.add(mainMenu, {

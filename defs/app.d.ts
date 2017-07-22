@@ -4,6 +4,10 @@ declare module 'assets/config' {
 
 	const config: {
 		readonly updateFrequencyHz: number;
+		readonly sectors: {
+			readonly from: number;
+			readonly to: number;
+		};
 		readonly viewport: {
 			readonly outerBorder: AnyVec2;
 			readonly innerMargin: AnyVec2;
