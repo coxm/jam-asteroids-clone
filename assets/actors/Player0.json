@@ -5,7 +5,7 @@
 	"cmp": [
 		{
 			"factory": "input",
-			"type": "arrows"
+			"type": "wasd"
 		}
 	]
 }

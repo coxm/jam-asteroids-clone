@@ -21,14 +21,21 @@ const KEYDOWN_HANDLERS = {
 		[KeyCode.s, driver.down.bind(driver)],
 		[KeyCode.a, driver.left.bind(driver)],
 		[KeyCode.d, driver.right.bind(driver)],
-		[KeyCode.q, driver.shoot.bind(driver)],
+		[KeyCode.x, driver.shoot.bind(driver)],
+	],
+	hjkl: (driver: Driver): [KeyCode, () => void][] => [
+		[KeyCode.k, driver.up.bind(driver)],
+		[KeyCode.j, driver.down.bind(driver)],
+		[KeyCode.h, driver.left.bind(driver)],
+		[KeyCode.l, driver.right.bind(driver)],
+		[KeyCode.Space, driver.shoot.bind(driver)],
 	],
 	arrows: (driver: Driver): [KeyCode, () => void][] => [
 		[KeyCode.ArrowUp, driver.up.bind(driver)],
 		[KeyCode.ArrowDown, driver.down.bind(driver)],
 		[KeyCode.ArrowLeft, driver.left.bind(driver)],
 		[KeyCode.ArrowRight, driver.right.bind(driver)],
-		[KeyCode.Space, driver.shoot.bind(driver)],
+		[KeyCode.Enter, driver.shoot.bind(driver)],
 	],
 	numpad: (driver: Driver): [KeyCode, () => void][] => [
 		[KeyCode.NumPad8, driver.up.bind(driver)],
@@ -46,6 +53,12 @@ const KEYUP_HANDLERS = {
 		[KeyCode.s, driver.stopDown.bind(driver)],
 		[KeyCode.a, driver.stopLeft.bind(driver)],
 		[KeyCode.d, driver.stopRight.bind(driver)],
+	],
+	hjkl: (driver: Driver): [KeyCode, () => void][] => [
+		[KeyCode.k, driver.stopUp.bind(driver)],
+		[KeyCode.j, driver.stopDown.bind(driver)],
+		[KeyCode.h, driver.stopLeft.bind(driver)],
+		[KeyCode.l, driver.stopRight.bind(driver)],
 	],
 	arrows: (driver: Driver): [KeyCode, () => void][] => [
 		[KeyCode.ArrowUp, driver.stopUp.bind(driver)],

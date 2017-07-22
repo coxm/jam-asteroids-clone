@@ -27,7 +27,7 @@ export const defaults: ExploderOptions = {
 		{
 			time: 0.001,
 			frequency: 300,
-			gain: 2,
+			gain: 1,
 		},
 		{
 			time: 0.2,

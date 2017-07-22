@@ -14,20 +14,41 @@
 		<script type="text/javascript" src="node_modules/p2/build/p2.js"></script>
 		<script type="text/javascript" src="config/system.js"></script>
 
+		<template id="player-toggle-tpl">
+			<button type="button" class="toggle-player">
+				<div class="row header"><span></span></div>
+				<div class="keys-container row">
+					<div class="keys">
+						<div class="row">
+							<span class="key up"><code></code></span>
+						</div>
+						<div class="row">
+							<span class="key left"><code></code></span>
+							<span class="key down"><code></code></span>
+							<span class="key right"><code></code></span>
+						</div>
+						<div class="row">Movement</div>
+					</div>
+					<div class="keys">
+						<div class="row">
+							<span class="key shoot"><code></code></span>
+						</div>
+						<div class="row">Shoot</div>
+					</div>
+				</div>
+			</button>
+		</template>
+
 		<template id="main-menu-tpl">
 			<div id="main-menu-container" class="hidden">
 				<div id="main-menu" class="menu">
-					<h3>Select number of players</h3>
-					<button type="button"
-							class="play-game"
-							data-player-count="1">
-						Single player
-					</button>
-					<button type="button"
-							class="play-game"
-							data-player-count="2">
-						Multiplayer
-					</button>
+					<h3>Select players</h3>
+
+					<div class="row player-toggles"></div>
+					<div class="row player-toggles"></div>
+					<div class="row">
+						<button type="button" id="play" disabled>Play</button>
+					</div>
 				</div>
 			</div>
 		</template>

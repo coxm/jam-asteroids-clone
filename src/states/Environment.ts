@@ -53,10 +53,7 @@ export class Environment extends State {
 			'Asteroid.png',
 			'Bullet.png'
 		);
-		const defNames: string[] = ['Bullet'];
-		for (let i = 0, count = settings.players.count; i < count; ++i) {
-			defNames.push(`Player${i}`);
-		}
+		const defNames: string[] = ['Bullet', ...settings.players];
 		const defs: ActorDef[] = await Promise.all(
 			defNames.map(name => load.actors.fromPartialDef({depends: name}))
 		);
@@ -70,13 +67,13 @@ export class Environment extends State {
 	// Initialisation/de-initialisation.
 	protected doInit(data: PreloadData): void {
 		Object.assign(this.actorDefs, data.actorDefs);
-		render.score.value = 0;
-		const playerIDs: symbol[] = [];
-		for (let i = 0, count = settings.players.count; i < count; ++i) {
-			const player  = this.actors.create(this.actorDefs[`Player${i}`]);
-			playerIDs.push(player.id);
+		for (const alias of settings.players) {
+			this.actors.create(this.actorDefs[alias]);
 		}
-		this.audio.init(playerIDs);
+		render.score.value = 0;
+		this.audio.init(
+			[...settings.players].map(alias => this.actors.at(alias).id)
+		);
 	}
 	protected doDeinit(): void {
 		physics.world.clear();
