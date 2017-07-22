@@ -1,12 +1,20 @@
 {
 	"updateFrequencyHz": 0.03333333333333333,
 	"sectors": {
-		"from": 0,
-		"to": 1
+		"from": 1,
+		"to": 2
 	},
-	"viewport": {
-		"outerBorder": [20, 20],
-		"innerMargin": [10, 10]
+	"render": {
+		"viewport": {
+			"outerBorder": [20, 20],
+			"innerMargin": [10, 10]
+		},
+		"textures": [
+			"Spaceship.png",
+			"Asteroid.png",
+			"AsteroidLarge.png",
+			"Bullet.png"
+		]
 	},
 	"audio": {
 		"gunGain": 0.2,

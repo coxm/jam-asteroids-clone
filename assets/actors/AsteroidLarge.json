@@ -3,7 +3,7 @@
 		{
 			"factory": "physics",
 			"type": "dynamic",
-			"mass": 1,
+			"mass": 10,
 			"damping": 0,
 			"angularDamping": 0,
 			"shapes": [
@@ -11,7 +11,7 @@
 					"type": "circle",
 					"radius": 32,
 					"collisionGroup": "asteroids",
-					"collisionMask": "*"
+					"collisionMask": "players, bullets"
 				}
 			]
 		},

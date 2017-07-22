@@ -10,7 +10,7 @@ import {Actor, ActorDef, factory} from './index';
 import {InputDriver} from './components/InputDriver';
 
 
-const {outerBorder, innerMargin} = config.viewport;
+const {outerBorder, innerMargin} = config.render.viewport;
 
 
 /**

@@ -11,7 +11,7 @@
 					"type": "circle",
 					"radius": 16,
 					"collisionGroup": "asteroids",
-					"collisionMask": "*"
+					"collisionMask": "players, bullets"
 				}
 			]
 		},

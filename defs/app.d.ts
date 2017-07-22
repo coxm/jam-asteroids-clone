@@ -8,9 +8,12 @@ declare module 'assets/config' {
 			readonly from: number;
 			readonly to: number;
 		};
-		readonly viewport: {
-			readonly outerBorder: AnyVec2;
-			readonly innerMargin: AnyVec2;
+		readonly render: {
+			readonly viewport: {
+				readonly outerBorder: AnyVec2;
+				readonly innerMargin: AnyVec2;
+			};
+			readonly textures: string[];
 		};
 		readonly audio: ManagerOptions;
 	};

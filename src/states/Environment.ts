@@ -48,11 +48,7 @@ export class Environment extends State {
 
 	// Preloading.
 	protected async doPreload(): Promise<PreloadData> {
-		await load.textures.textures(
-			'Spaceship.png',
-			'Asteroid.png',
-			'Bullet.png'
-		);
+		await load.textures.textures(...config.render.textures);
 		const defNames: string[] = ['Bullet', ...settings.players];
 		const defs: ActorDef[] = await Promise.all(
 			defNames.map(name => load.actors.fromPartialDef({depends: name}))
