@@ -4,6 +4,8 @@ declare module 'assets/config' {
 
 	const config: {
 		readonly updateFrequencyHz: number;
+		readonly noticeDuration: number;
+		readonly actorDefs: string[];
 		readonly sectors: {
 			readonly from: number;
 			readonly to: number;

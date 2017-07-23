@@ -27,7 +27,8 @@
 				"basic": {
 					"frames": [0]
 				}
-			}
+			},
+			"stage": "main"
 		},
 		{
 			"factory": "asteroidDriver",

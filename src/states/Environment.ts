@@ -11,6 +11,7 @@ import {Manager as AudioManager} from 'game/audio/Manager';
 import {
 	Manager as ActorManager,
 	isPlayer,
+	isAsteroid,
 	UpdateResult
 } from 'game/actors/Manager';
 import {Actor, ActorDef} from 'game/actors/index';
@@ -73,10 +74,7 @@ export class Environment extends State {
 	// Preloading.
 	protected async doPreload(): Promise<PreloadData> {
 		await load.textures.textures(...config.render.textures);
-		const defNames: string[] = [
-			'Bullet', 'Asteroid', 'AsteroidLarge',
-			...settings.players
-		];
+		const defNames: string[] = [...config.actorDefs, ...settings.players];
 		const defs: ActorDef[] = await Promise.all(
 			defNames.map(name => load.actors.fromPartialDef({depends: name}))
 		);
@@ -180,6 +178,13 @@ export class Environment extends State {
 			for (let actor of actors) {
 				this.addActorToStage(actor, render.stages[stage]);
 			}
+		}
+		else if (isAsteroid(actor)) {  // Small asteroid.
+			this.actors.createNotice(
+				this.actorDefs.MoreAmmoNotice,
+				actor.cmp.phys.body.position,
+				config.noticeDuration
+			);
 		}
 	}
 

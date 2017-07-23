@@ -1,6 +1,8 @@
 import {AnimationDef} from 'jam/render/animation'
-import {Animated, AnimatedDef} from 'jam/actors/cmp/Animated';
-export {Animated, AnimatedDef} from 'jam/actors/cmp/Animated';
+import {
+	Animated as AnimatedBase,
+	AnimatedDef as AnimatedBaseDef,
+} from 'jam/actors/cmp/Animated';
 
 import {ComponentDef} from 'game/actors/index';
 import {textures} from 'game/load/index';
@@ -13,6 +15,7 @@ export interface RawAnimatedDef extends ComponentDef {
 	readonly frameWidth: number;
 	readonly frameHeight: number;
 	readonly frameCount: number;
+	readonly stage: string;
 	readonly animations: {
 		[id: string]: AnimationDef;
 		[id: number]: AnimationDef;
@@ -20,7 +23,15 @@ export interface RawAnimatedDef extends ComponentDef {
 }
 
 
+export interface AnimatedDef extends AnimatedBaseDef {
+	readonly stage: string;
+}
+
+
 export const getAnimatedDef = (raw: RawAnimatedDef): AnimatedDef => {
+	if (!raw.stage) {
+		throw new Error("Animated def has no stage");
+	}
 	const texture: string | PIXI.Texture = raw.texture;
 	if (typeof texture === 'object') {
 		return raw as AnimatedDef;
@@ -34,6 +45,15 @@ export const getAnimatedDef = (raw: RawAnimatedDef): AnimatedDef => {
 		texture: cached,
 	}) as AnimatedDef;
 };
+
+
+export class Animated extends AnimatedBase {
+	readonly stage: string;
+	constructor(def: AnimatedDef, actorID: symbol) {
+		super(def, actorID);
+		this.stage = def.stage;
+	}
+}
 
 
 export const create = (raw: RawAnimatedDef, actorID: symbol): Animated =>

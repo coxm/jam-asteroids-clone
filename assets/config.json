@@ -1,5 +1,13 @@
 {
 	"updateFrequencyHz": 0.03333333333333333,
+	"noticeDuration": 650,
+	"actorDefs": [
+		"Bullet",
+		"Asteroid",
+		"AsteroidLarge",
+		"AsteroidMassive",
+		"MoreAmmoNotice"
+	],
 	"sectors": {
 		"from": 0,
 		"to": 4
@@ -14,7 +22,8 @@
 			"Asteroid.png",
 			"AsteroidLarge.png",
 			"AsteroidMassive.png",
-			"Bullet.png"
+			"Bullet.png",
+			"MoreAmmoNotice.png"
 		]
 	},
 	"audio": {

@@ -24,17 +24,20 @@ export const stages: {
 	readonly hud: PIXI.Container;
 	readonly projectiles: PIXI.Container;
 	readonly main: PIXI.Container;
+	readonly notices: PIXI.Container;
 } = {
 	hud: new PIXI.Container(),  // The HUD; contains e.g. the score dispaly.
 	projectiles: new PIXI.Container(),  // For bullets and other projectiles.
 	main: new PIXI.Container(),  // Contains ships and asteroids.
+	notices: new PIXI.Container(),  // Contains notices (e.g. 'HP+1').
 };
 
 
 /** The root stage (private). */
 const rootStage = new PIXI.Container();
 rootStage.addChild(stages.projectiles);  // Projectiles at bottom.
-rootStage.addChild(stages.main);  // Then the ships and asteroides.
+rootStage.addChild(stages.main);  // Then the ships and asteroids.
+rootStage.addChild(stages.notices);  // Then notices.
 rootStage.addChild(stages.hud);  // HUD on top.
 
 

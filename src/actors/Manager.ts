@@ -81,6 +81,9 @@ export class Manager {
 	update(): UpdateResult {
 		for (let actor of this.byID.values()) {
 			const cmp = actor.cmp;
+			if (!cmp.phys) {
+				continue;
+			}
 			const pos = cmp.phys.body.position;
 			if (!cmp.projectile) {  // Only projectiles get wrapped.
 				wrapPosition(pos);
@@ -148,10 +151,9 @@ export class Manager {
 		physics.world.addBody(body);
 
 		// Add animated components to the stage.
-		actor.cmp.anim.renderable.position.set(
-			body.position[0], body.position[1]);
-		render.stages[actor.cmp.projectile ? 'projectiles' : 'main']
-			.addChild(actor.cmp.anim.renderable);
+		const anim = actor.cmp.anim;
+		anim.renderable.position.set(body.position[0], body.position[1]);
+		render.stages[anim.stage].addChild(anim.renderable);
 
 		if (isPlayer(actor)) {
 			this.players.push(actor);
@@ -222,6 +224,20 @@ export class Manager {
 		return actors;
 	}
 
+	createNotice(def: ActorDef, position: AnyVec2, duration: number)
+		: void
+	{
+		const actor = factory.actor(def);
+		const id = actor.id;
+		this.byID.set(id, actor);
+		const anim = actor.cmp.anim;
+		render.stages.notices.addChild(anim.renderable);
+		anim.renderable.position.set(position[0], position[1]);
+		setTimeout((): void => {
+			this.queueDelete(id);
+		}, duration);
+	}
+
 	private doDelete(id: symbol): void {
 		const actor = this.byID.get(id);
 		if (!actor) {
@@ -238,11 +254,9 @@ export class Manager {
 			this.bodyOwners.delete(actor.cmp.phys.body);
 		}
 
-		if (actor.cmp.projectile) {
-			render.stages.projectiles.removeChild(actor.cmp.anim.renderable);
-		}
-		else if (actor.cmp.anim) {
-			render.stages.main.removeChild(actor.cmp.anim.renderable);
+		const anim = actor.cmp.anim;
+		if (anim) {
+			render.stages[anim.stage].removeChild(anim.renderable);
 		}
 
 		if (actor.alias) {
