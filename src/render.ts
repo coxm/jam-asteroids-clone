@@ -20,6 +20,7 @@ export const renderer: Renderer = PIXI.autoDetectRenderer(
 
 
 export const stages: {
+	readonly [key: string]: PIXI.Container;
 	readonly hud: PIXI.Container;
 	readonly projectiles: PIXI.Container;
 	readonly main: PIXI.Container;

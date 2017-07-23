@@ -73,7 +73,7 @@ export class Environment extends State {
 	// Preloading.
 	protected async doPreload(): Promise<PreloadData> {
 		await load.textures.textures(...config.render.textures);
-		const defNames: string[] = ['Bullet', ...settings.players];
+		const defNames: string[] = ['Bullet', 'Asteroid', ...settings.players];
 		const defs: ActorDef[] = await Promise.all(
 			defNames.map(name => load.actors.fromPartialDef({depends: name}))
 		);
@@ -148,31 +148,49 @@ export class Environment extends State {
 
 		const aIsProjectile: boolean = !!actorA.cmp.projectile;
 		const bIsProjectile: boolean = !!actorB.cmp.projectile;
-		if (aIsProjectile || bIsProjectile) {
-			this.audio.onProjectileHit();
-			if (isPlayer(actorA) || isPlayer(actorB)) {
-				render.score.value -= 50;
-			}
-			else if (aIsProjectile !== bIsProjectile) {
-				render.score.value += 10;
-			}
-		}
-		else {
+		if (!(aIsProjectile || bIsProjectile)) {
 			this.audio.onCollision();
+		}
+
+		this.audio.onProjectileHit();
+		if (aIsProjectile && bIsProjectile) {
+			return;
+		}
+
+		if (isPlayer(actorA) || isPlayer(actorB)) {
+			render.score.value -= 50;
+		}
+		else if (aIsProjectile !== bIsProjectile) {
+			render.score.value += 10;
 		}
 	}
 
 	private onActorHasNoHealth(ev: events.Event): void {
 		this.actors.queueDelete(ev.data.actorID);
+		const actor = this.actors.at(ev.data.actorID);
+		if (actor.cmp.exploder) {
+			const {debris, offset, count, speed, stage} =
+				actor.cmp.exploder.def;
+			const actors: Actor[] = this.actors.createExplosion(
+				this.actorDefs[debris], actor.cmp.phys.body.position,
+				offset, count, speed);
+			for (let actor of actors) {
+				this.addActorToStage(actor, render.stages[stage]);
+			}
+		}
 	}
 
 	private onGunFired(ev: events.Event): void {
 		this.audio.onGunFired(ev);
 		const projectile: Actor = this.actors.createProjectile(
 			this.actorDefs[ev.data.projectileName], ev.data);
-		const body = projectile.cmp.phys.body;
-		const renderable = projectile.cmp.anim.renderable;
+		this.addActorToStage(projectile, render.stages.projectiles);
+	}
+
+	private addActorToStage(actor: Actor, stage: PIXI.Container): void {
+		const body = actor.cmp.phys.body;
+		const renderable = actor.cmp.anim.renderable;
 		renderable.position.set(body.position[0], body.position[1]);
-		render.stages.projectiles.addChild(renderable);
+		stage.addChild(renderable);
 	}
 }

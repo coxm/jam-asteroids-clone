@@ -27,6 +27,7 @@ export {Driver} from 'game/actors/components/KeyboardControl';
 import {Health, HealthDef} from 'game/actors/components/Health';
 import {Gun, GunDef} from 'game/actors/components/Gun';
 import {Projectile, ProjectileDef} from 'game/actors/components/Projectile';
+import {Exploder, ExploderDef} from 'game/actors/components/Exploder';
 
 
 /** Components held by an actor. */
@@ -39,6 +40,7 @@ export interface ActorComponents {
 	readonly health: Health;
 	readonly gun: Gun;  // Caution: optional!
 	readonly projectile: Projectile;  // Caution: optional!
+	readonly exploder: Exploder;  // Caution: optional!
 }
 
 
@@ -52,6 +54,7 @@ KeyboardControl.prototype.key = 'input';
 Health.prototype.key = 'health';
 Gun.prototype.key = 'gun';
 Projectile.prototype.key = 'projectile';
+Exploder.prototype.key = 'exploder';
 
 
 
@@ -80,4 +83,6 @@ factory.setCmpFactories({
 	gun: (def: GunDef, actorID: symbol) => new Gun(def, actorID),
 	projectile: (def: ProjectileDef, actorID: symbol) =>
 		new Projectile(def, actorID),
+	exploder: (def: ExploderDef, actorID: symbol) =>
+		new Exploder(def, actorID),
 });

@@ -37,6 +37,14 @@
 		{
 			"factory": "health",
 			"hitpoints": 5
+		},
+		{
+			"factory": "exploder",
+			"debris": "Asteroid",
+			"offset": [0.5, 0],
+			"count": 3,
+			"speed": 100,
+			"stage": "main"
 		}
 	]
 }

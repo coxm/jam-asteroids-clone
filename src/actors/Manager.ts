@@ -53,6 +53,7 @@ export interface ProjectileOptions {
 	readonly position: AnyVec2;
 	readonly offset: AnyVec2;
 	readonly angle: number;
+	readonly speed?: number;
 }
 
 
@@ -160,7 +161,7 @@ export class Manager {
 
 	createProjectile(
 		def: ActorDef,
-		{position, offset, angle}: ProjectileOptions
+		{position, offset, angle, speed}: ProjectileOptions
 	)
 		:	Actor
 	{
@@ -168,9 +169,11 @@ export class Manager {
 		const cos = Math.cos(angle);
 		const sin = Math.sin(angle);
 		const actor = factory.actor(def);
-		const speed = actor.cmp.projectile.speed;
+		if (actor.cmp.projectile && speed === undefined) {
+			speed = actor.cmp.projectile.speed;
+		}
 		const body = actor.cmp.phys.body;
-		p2.vec2.set(body.velocity, speed * cos, speed * sin);
+		p2.vec2.set(body.velocity, speed! * cos, speed! * sin);
 		p2.vec2.set(
 			body.position, 
 			position[0] + offset[0] * cos,
@@ -195,6 +198,28 @@ export class Manager {
 
 	queueDelete(id: symbol): void {
 		this.toKill.push(id);
+	}
+
+	createExplosion(
+		projectileDef: ActorDef,
+		position: AnyVec2,
+		offset: AnyVec2,
+		count: number,
+		speed: number
+	)
+		: Actor[]
+	{
+		const tau = Math.PI * 2;
+		const segment: number = tau / count;
+		const start: number = Math.random() * tau;
+		const end: number = start + tau;
+		const actors: Actor[] = [];
+		for (let angle = start; angle < end; angle += segment) {
+			actors.push(this.createProjectile(projectileDef, {
+				position, offset, angle, speed,
+			}));
+		}
+		return actors;
 	}
 
 	private doDelete(id: symbol): void {
