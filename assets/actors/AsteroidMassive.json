@@ -3,13 +3,13 @@
 		{
 			"factory": "physics",
 			"type": "dynamic",
-			"mass": 20,
+			"mass": 120,
 			"damping": 0,
 			"angularDamping": 0,
 			"shapes": [
 				{
 					"type": "circle",
-					"radius": 32,
+					"radius": 64,
 					"collisionGroup": "asteroids",
 					"collisionMask": "players, bullets"
 				}
@@ -19,9 +19,9 @@
 			"factory": "animated",
 			"initial": "basic",
 			"stopped": true,
-			"texture": "AsteroidLarge.png",
-			"frameWidth": 64,
-			"frameHeight": 64,
+			"texture": "AsteroidMassive.png",
+			"frameWidth": 128,
+			"frameHeight": 128,
 			"frameCount": 1,
 			"animations": {
 				"basic": {
@@ -36,14 +36,14 @@
 		},
 		{
 			"factory": "health",
-			"hitpoints": 6
+			"hitpoints": 20
 		},
 		{
 			"factory": "exploder",
-			"debris": "Asteroid",
+			"debris": "AsteroidLarge",
 			"offset": [0.5, 0],
-			"count": 3,
-			"speed": 100,
+			"count": 4,
+			"speed": 80,
 			"stage": "main"
 		}
 	]

@@ -73,7 +73,10 @@ export class Environment extends State {
 	// Preloading.
 	protected async doPreload(): Promise<PreloadData> {
 		await load.textures.textures(...config.render.textures);
-		const defNames: string[] = ['Bullet', 'Asteroid', ...settings.players];
+		const defNames: string[] = [
+			'Bullet', 'Asteroid', 'AsteroidLarge',
+			...settings.players
+		];
 		const defs: ActorDef[] = await Promise.all(
 			defNames.map(name => load.actors.fromPartialDef({depends: name}))
 		);

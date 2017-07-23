@@ -1,0 +1,8 @@
+{
+	"actors": [
+		{
+			"depends": "AsteroidMassive",
+			"position": [600, 600]
+		}
+	]
+}
