@@ -3,6 +3,9 @@ import {FileLoader} from 'jam/load/FileLoader';
 import {cache} from './cache';
 
 
+const filename: symbol = Symbol('filename');
+
+
 export class CachedFileLoader extends FileLoader {
 	/** All loaded files will be stored in this cache. */
 	readonly cache: Map<string, any>;
@@ -15,7 +18,9 @@ export class CachedFileLoader extends FileLoader {
 
 	/** Load a JSON file. */
 	@cache
-	json<T>(relpath: string): Promise<T> {
-		return super.json(relpath);
+	async json<T>(relpath: string): Promise<T> {
+		const obj: T = await super.json<T>(relpath);
+		(obj as any)[filename] = relpath;
+		return obj;
 	}
 }

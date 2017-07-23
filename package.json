@@ -12,7 +12,7 @@
     "test": "make test"
   },
   "dependencies": {
-    "jam": "github:coxm/jam-engine#v16.0.0",
+    "jam": "github:coxm/jam-engine#v16.1.0",
     "p2": "^0.7.1",
     "pixi.js": "4.4.0",
     "systemjs": "^0.20.15",

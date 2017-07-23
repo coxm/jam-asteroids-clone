@@ -6,6 +6,7 @@ import {Exploder, ExploderOptions} from './Exploder';
 
 
 export interface ManagerOptions {
+	readonly master?: number;
 	readonly gunGain: number;
 	readonly engineGain: number;
 	readonly collisions?: ExploderOptions;
@@ -58,6 +59,11 @@ export class Manager {
 	constructor(context: AudioContext, options?: ManagerOptions) {
 		this.options = Object.assign({}, options, defaults);
 		this.master = context.createGain();
+		if (typeof options!.master === 'number') {
+			if (0 === (this.master.gain.value = options!.master!)) {
+				console.warn('Master volume set to zero');
+			}
+		}
 		this.collisions = new EffectPool(
 			() => new Exploder(context, this.options!.collisions!)
 		);

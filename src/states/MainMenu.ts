@@ -93,12 +93,12 @@ export class MainMenu extends State {
 		document.getElementById('play')!.addEventListener('click', onPlay);
 	}
 
-	protected doStart(data: MenuPreloadData): void {
+	protected doAttach(): void {
 		document.querySelector('canvas')!.classList.add('hidden');
 		this.element!.classList.remove('hidden');
 	}
 
-	protected doStop(): void {
+	protected doDetach(): void {
 		this.element!.classList.add('hidden');
 		document.getElementById('container')!.removeChild(this.element!);
 		document.querySelector('canvas')!.classList.remove('hidden');

@@ -1,7 +1,7 @@
 {
 	"updateFrequencyHz": 0.03333333333333333,
 	"sectors": {
-		"from": 1,
+		"from": 0,
 		"to": 2
 	},
 	"render": {
@@ -17,6 +17,7 @@
 		]
 	},
 	"audio": {
+		"master": 0,
 		"gunGain": 0.2,
 		"engineGain": 0.3,
 		"collisions": {

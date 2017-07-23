@@ -1,9 +1,7 @@
 import config from 'assets/config';
 
 import {camera} from 'game/render';
-import * as events from 'game/events';
 import * as render from 'game/render';
-import * as states from 'game/states/index';
 import * as physics from 'game/physics';
 
 import {Actor, ActorDef, factory} from './index';
@@ -42,10 +40,26 @@ const wrapPosition = (pos: AnyVec2): void => {
 export const isPlayer = (actor: Actor): boolean => !!actor.cmp.input;
 
 
+/** Check if an actor is a projectile. */
+export const isProjectile = (actor: Actor): boolean => !!actor.cmp.projectile;
+
+
+/** Check if an actor is an asteroid. */
+export const isAsteroid = (actor: Actor): boolean =>
+	!isPlayer(actor) && !isProjectile(actor);
+
+
 export interface ProjectileOptions {
 	readonly position: AnyVec2;
 	readonly offset: AnyVec2;
 	readonly angle: number;
+}
+
+
+export enum UpdateResult {
+	failure,
+	success,
+	continue,
 }
 
 
@@ -58,19 +72,12 @@ export class Manager {
 	private readonly toKill: symbol[] = [];
 	private playerDied: boolean = false;
 
-	get failed(): boolean {
-		return this.playerDied;
-	}
-
 	/** Reset this actor manager. */
 	deinit(): void {
-		this.byID.clear();
-		this.byAlias.clear();
-		this.players.length = 0;
-		this.playerDied = false;
+		this.constructor.call(this);
 	}
 
-	update(): void {
+	update(): UpdateResult {
 		for (let actor of this.byID.values()) {
 			const cmp = actor.cmp;
 			const pos = cmp.phys.body.position;
@@ -89,14 +96,21 @@ export class Manager {
 		for (let i = 0, len = this.toKill.length; i < len; ++i) {
 			this.doDelete(this.toKill[i]);
 		}
+		this.toKill.length = 0;
 
-		if (this.toKill.length > 0) {
-			if (this.byID.size === this.players.length) {
-				events.manager.fire(events.Category.sectorComplete, null);
-				states.manager.trigger(states.Trigger.sectorComplete);
-			}
-			this.toKill.length = 0;
+		if (this.playerDied) {
+			return UpdateResult.failure;
 		}
+
+		// If any asteroids remain, continue.
+		for (const actor of this.byID.values()) {
+			if (isAsteroid(actor)) {
+				return UpdateResult.continue;
+			}
+		}
+
+		// If no asteroids remain and the players are alive, success!
+		return UpdateResult.success;
 	}
 
 	/** Lookup an actor by ID or alias. */
@@ -117,6 +131,7 @@ export class Manager {
 	}
 
 	create(def: ActorDef): Actor {
+		this.ensureCanCreateMore();
 		const actor: Actor = factory.actor(def);
 		this.byID.set(actor.id, actor);
 		if (actor.alias) {
@@ -149,6 +164,7 @@ export class Manager {
 	)
 		:	Actor
 	{
+		this.ensureCanCreateMore();
 		const cos = Math.cos(angle);
 		const sin = Math.sin(angle);
 		const actor = factory.actor(def);
@@ -210,5 +226,11 @@ export class Manager {
 		this.byID.delete(actor.id);
 
 		actor.destroy();
+	}
+
+	private ensureCanCreateMore(): void {
+		if (this.byID.size >= 50) {
+			throw new Error("Actor limit reached");
+		}
 	}
 }

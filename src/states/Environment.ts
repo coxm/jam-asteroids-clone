@@ -6,11 +6,17 @@ import * as settings from 'game/settings';
 import * as render from 'game/render';
 import * as events from 'game/events';
 import * as load from 'game/load/index';
-import * as states from 'game/states/index';
 import * as physics from 'game/physics';
 import {Manager as AudioManager} from 'game/audio/Manager';
-import {Manager as ActorManager, isPlayer} from 'game/actors/Manager';
+import {
+	Manager as ActorManager,
+	isPlayer,
+	UpdateResult
+} from 'game/actors/Manager';
 import {Actor, ActorDef} from 'game/actors/index';
+
+import * as states from './index';
+import {Sector, SectorPreloadData} from './Sector';
 
 
 interface PreloadData {
@@ -30,19 +36,36 @@ export class Environment extends State {
 		new AudioContext(), config.audio);
 	private updateLoopID: number = 0;
 	private readonly eventsBatchID: symbol;
+	private sector: Sector | null = null;
 
 	constructor(name: string) {
 		super(name);
 		this.eventsBatchID = Symbol(name);
 	}
 
+	async enterSector(sector: Sector): Promise<void> {
+		this.sector = null;
+		const preloadData: SectorPreloadData = await sector.preload();
+		for (const def of preloadData.actors) {
+			this.actors.create(def);
+		}
+		this.sector = sector;
+		return sector.start();
+	}
+
+	leaveCurrentSector(): void {
+		this.sector = null;
+	}
+
 	// Update loop.
 	private update(): void {
 		physics.world.step(config.updateFrequencyHz);
-		this.actors.update();
-		if (this.actors.failed) {
-			states.manager.trigger(states.Trigger.failure);
-			return;
+		const result = this.actors.update();
+		if (result === UpdateResult.failure) {
+			states.manager.trigger(states.Trigger.playerDied);
+		}
+		else if (result === UpdateResult.success && this.sector !== null) {
+			states.manager.trigger(states.Trigger.sectorComplete);
 		}
 	}
 
@@ -72,16 +95,11 @@ export class Environment extends State {
 		);
 	}
 	protected doDeinit(): void {
-		physics.world.clear();
-		this.actors.deinit();
+		Environment.call(this, this.name);
 	}
 
 	// Pause/unpause.
-	protected doPause(): void {
-		clearInterval(this.updateLoopID);
-		this.updateLoopID = 0;
-	}
-	protected doUnpause(): void {
+	protected doStart(): void {
 		if (this.updateLoopID === 0) {
 			this.updateLoopID = setInterval(
 				(): void => this.update(),
@@ -89,15 +107,9 @@ export class Environment extends State {
 			);
 		}
 	}
-
-	// Start/stop.
-	protected doStart(): void {
-		this.doUnpause();
-		// Jump to the first child, but leave this state running.
-		states.manager.trigger(states.Trigger.startChild);
-	}
 	protected doStop(): void {
-		this.doPause();
+		clearInterval(this.updateLoopID);
+		this.updateLoopID = 0;
 	}
 
 	// Attach/detach.
@@ -116,17 +128,10 @@ export class Environment extends State {
 	// Event handling.
 	private getEventHandlers(): events.HandlerItem[] {
 		return [
-			[events.Category.sectorEntered, this.onSectorEntered],
 			[events.Category.collision, this.onCollision],
 			[events.Category.actorHasNoHealth, this.onActorHasNoHealth],
 			[events.Category.gunFired, this.onGunFired],
 		];
-	}
-
-	private onSectorEntered(ev: events.Event): void {
-		for (let def of ev.data.actors) {
-			this.actors.create(def);
-		}
 	}
 
 	private onCollision(ev: events.Event): void {
