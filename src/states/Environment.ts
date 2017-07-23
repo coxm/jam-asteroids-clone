@@ -62,6 +62,7 @@ export class Environment extends State {
 		physics.world.step(config.updateFrequencyHz);
 		const result = this.actors.update();
 		if (result === UpdateResult.failure) {
+			this.pause();
 			states.manager.trigger(states.Trigger.playerDied);
 		}
 		else if (result === UpdateResult.success && this.sector !== null) {
