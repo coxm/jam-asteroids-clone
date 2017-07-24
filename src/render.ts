@@ -19,31 +19,43 @@ export const renderer: Renderer = PIXI.autoDetectRenderer(
 );
 
 
+/**
+ * The render stage tree.
+ *
+ * rootStage
+ *  |-- space (contains most stuff in the game; gets manipulated by the camera)
+ *  |    |-- projectiles (bullets; these get rendered underneath everything)
+ *  |    |-- main (ships and asteroids)
+ *  |    |-- notices (e.g. +HP and +ammo notices)
+ *  |-- hud (the HUD; gets rendered on top and is static)
+ */
 export const stages: {
 	readonly [key: string]: PIXI.Container;
 	readonly hud: PIXI.Container;
+	readonly space: PIXI.Container;
 	readonly projectiles: PIXI.Container;
 	readonly main: PIXI.Container;
 	readonly notices: PIXI.Container;
 } = {
-	hud: new PIXI.Container(),  // The HUD; contains e.g. the score dispaly.
-	projectiles: new PIXI.Container(),  // For bullets and other projectiles.
-	main: new PIXI.Container(),  // Contains ships and asteroids.
-	notices: new PIXI.Container(),  // Contains notices (e.g. 'HP+1').
+	hud: new PIXI.Container(),
+	space: new PIXI.Container(),
+	projectiles: new PIXI.Container(),
+	main: new PIXI.Container(),
+	notices: new PIXI.Container(),
 };
 
 
-/** The root stage (private). */
-const rootStage = new PIXI.Container();
-rootStage.addChild(stages.projectiles);  // Projectiles at bottom.
-rootStage.addChild(stages.main);  // Then the ships and asteroids.
-rootStage.addChild(stages.notices);  // Then notices.
-rootStage.addChild(stages.hud);  // HUD on top.
+export const rootStage = new PIXI.Container();
+rootStage.addChild(stages.space);
+rootStage.addChild(stages.hud);
+stages.space.addChild(stages.projectiles);
+stages.space.addChild(stages.main);
+stages.space.addChild(stages.notices);
 
 
 let scoreValue: number = 0;
 const scoreDisplay = new PIXI.Text('Score: 0');
-scoreDisplay.position.set(180, 200);
+scoreDisplay.position.set(500, 420);
 stages.hud.addChild(scoreDisplay);
 
 
@@ -63,7 +75,7 @@ export const score = {
 };
 
 
-export const camera = new Camera(viewportWidth, viewportHeight, rootStage);
+export const camera = new Camera(viewportWidth, viewportHeight, stages.space);
 camera.moveTo(0, 0);
 
 

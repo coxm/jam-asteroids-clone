@@ -1,7 +1,7 @@
 import {State} from 'jam/states/State';
 
 import * as states from 'game/states/index';
-import {stages, camera} from 'game/render';
+import {stages} from 'game/render';
 import {textures} from 'game/load/index';
 
 
@@ -22,7 +22,6 @@ export class Splash extends State {
 
 	protected doInit(texture: PIXI.Texture): void {
 		this.background = new PIXI.Sprite(texture);
-		this.background.position.set(camera.xmin, camera.ymin);
 		if (this.timeout !== undefined) {
 			setTimeout((): void => {
 				states.manager.trigger(states.Trigger.splashDone);
