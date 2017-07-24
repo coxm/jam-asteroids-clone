@@ -97,9 +97,11 @@ export class Manager {
 			cmp.anim.renderable.rotation = body.angle;
 			cmp.driver && (cmp.driver as InputDriver).update &&
 				(cmp.driver as InputDriver).update();
-			if ((cmp.health as PlayerHealth).renderable) {
-				(cmp.health as PlayerHealth).renderable.position.set(
-					body.position[0], body.position[1]);
+
+			const shield = (cmp.health as PlayerHealth).renderable;
+			if (shield) {
+				shield.position.set(pos[0], pos[1]);
+				shield.rotation = body.angle;
 			}
 		}
 
@@ -163,7 +165,7 @@ export class Manager {
 
 		if (isPlayer(actor)) {
 			this.players.push(actor);
-			render.stages.main.addChild(
+			render.stages.lower.addChild(
 				(actor.cmp.health as PlayerHealth).renderable);
 		}
 		return actor;
@@ -255,7 +257,7 @@ export class Manager {
 		if (playerIndex >= 0) {
 			this.players.splice(playerIndex, 1);
 			this.playerDied = true;
-			render.stages.main.removeChild(
+			render.stages.lower.removeChild(
 				(actor.cmp.health as PlayerHealth).renderable);
 		}
 

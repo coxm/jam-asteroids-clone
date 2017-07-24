@@ -24,7 +24,7 @@ export const renderer: Renderer = PIXI.autoDetectRenderer(
  *
  * rootStage
  *  |-- space (contains most stuff in the game; gets manipulated by the camera)
- *  |    |-- projectiles (bullets; these get rendered underneath everything)
+ *  |    |-- lower (bullets & shields; these are rendered at the bottom)
  *  |    |-- main (ships and asteroids)
  *  |    |-- notices (e.g. +HP and +ammo notices)
  *  |-- hud (the HUD; gets rendered on top and is static)
@@ -33,13 +33,13 @@ export const stages: {
 	readonly [key: string]: PIXI.Container;
 	readonly hud: PIXI.Container;
 	readonly space: PIXI.Container;
-	readonly projectiles: PIXI.Container;
+	readonly lower: PIXI.Container;
 	readonly main: PIXI.Container;
 	readonly notices: PIXI.Container;
 } = {
 	hud: new PIXI.Container(),
 	space: new PIXI.Container(),
-	projectiles: new PIXI.Container(),
+	lower: new PIXI.Container(),
 	main: new PIXI.Container(),
 	notices: new PIXI.Container(),
 };
@@ -48,7 +48,7 @@ export const stages: {
 export const rootStage = new PIXI.Container();
 rootStage.addChild(stages.space);
 rootStage.addChild(stages.hud);
-stages.space.addChild(stages.projectiles);
+stages.space.addChild(stages.lower);
 stages.space.addChild(stages.main);
 stages.space.addChild(stages.notices);
 

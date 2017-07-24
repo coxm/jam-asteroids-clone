@@ -20,7 +20,7 @@ export class Health extends ComponentBase {
 
 	subtract(hitpoints: number): void {
 		this.hitpoints -= hitpoints;
-		if (this.hitpoints < 0) {
+		if (this.hitpoints <= 0) {
 			events.manager.fire(events.Category.actorHasNoHealth, {
 				actorID: this.actorID,
 			});
@@ -30,19 +30,27 @@ export class Health extends ComponentBase {
 
 
 export class PlayerHealth extends Health {
-	readonly renderable: PIXI.Sprite;
+	readonly renderable: PIXI.extras.AnimatedSprite;
 
 	constructor(def: HealthDef, actorID: symbol) {
 		super(def, actorID);
-		this.renderable = new PIXI.Sprite(
-			textures.cached('HealthBar.png'));
-		this.renderable.anchor.set(0, 8);
+		const texture = textures.cached('Spaceship.png');
+		const frames: PIXI.Texture[] = [];
+		const orig = new PIXI.Rectangle(0, 0, texture.width, texture.height);
+		// Stack the frames in inverse order. Remember PIXI inverts the y-axis.
+		for (let y = 0; y < 64; y += 32) {
+			for (let x = 0; x < texture.width; x += 32) {
+				frames.push(new PIXI.Texture(
+					texture as any, new PIXI.Rectangle(x, y, 32, 32), orig));
+			}
+		}
+		this.renderable = new PIXI.extras.AnimatedSprite(frames, false);
+		this.renderable.anchor.set(0.5, 0.5);
 	}
 
 	subtract(hitpoints: number): void {
 		super.subtract(hitpoints);
-		this.renderable.width = (
-			this.renderable.texture.width * this.hitpoints / this.max) | 0;
+		this.renderable.gotoAndStop(this.max - this.hitpoints);
 	}
 
 	onAdd(actor: Actor): void {

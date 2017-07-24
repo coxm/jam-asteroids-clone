@@ -190,7 +190,7 @@ export class Environment extends State {
 		this.audio.onGunFired(ev);
 		const projectile: Actor = this.actors.createProjectile(
 			this.actorDefs[ev.data.projectileName], ev.data);
-		this.addActorToStage(projectile, render.stages.projectiles);
+		this.addActorToStage(projectile, render.stages.lower);
 	}
 
 	private addActorToStage(actor: Actor, stage: PIXI.Container): void {

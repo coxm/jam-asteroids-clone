@@ -27,7 +27,7 @@
 					"frames": [0]
 				}
 			},
-			"stage": "projectiles"
+			"stage": "lower"
 		},
 		{
 			"factory": "health",
