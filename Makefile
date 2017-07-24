@@ -5,12 +5,12 @@ svg_outputs=$(svg_sources:%.svg=%.png)
 
 
 .PHONY: default
-default: game
+default: game svgs
 	
 
 
 .PHONY: all
-all: jam game
+all: jam game svgs
 	
 
 
