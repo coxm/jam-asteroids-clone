@@ -1,5 +1,7 @@
 import {initKeyEvents} from 'jam/input/keyboard';
 
+import config from 'assets/config';
+
 import * as render from 'game/render';
 import * as states from 'game/states/index';
 import * as audio from 'game/audio/index';
@@ -18,4 +20,6 @@ states.resume(states.manager.current);
 render.loop.start();
 
 // Start the intro music.
-audio.manager.music.play();
+if (config.audio.master! > 0) {
+	audio.manager.music.play();
+}
