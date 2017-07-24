@@ -33,13 +33,11 @@ interface PreloadData {
 export class Environment extends State {
 	private readonly actors = new ActorManager();
 	private readonly actorDefs: {[key: string]: ActorDef;} = {};
-	private readonly audio = new AudioManager(
-		new AudioContext(), config.audio);
 	private updateLoopID: number = 0;
 	private readonly eventsBatchID: symbol;
 	private sector: Sector | null = null;
 
-	constructor(name: string) {
+	constructor(name: string, private readonly audio: AudioManager) {
 		super(name);
 		this.eventsBatchID = Symbol(name);
 	}

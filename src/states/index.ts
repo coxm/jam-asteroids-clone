@@ -5,6 +5,8 @@ import {Manager, TriggerEvent} from 'jam/states/Manager';
 
 import config from 'assets/config';
 
+import {manager as audio} from 'game/audio/index';
+
 import {Sector} from './Sector';
 import {Splash} from './Splash';
 import {MainMenu} from './MainMenu';
@@ -22,6 +24,7 @@ export const enum Trigger {
 	sectorComplete,
 	playerDied,
 	startChild,
+	splashDone,
 }
 
 
@@ -49,7 +52,8 @@ export const manager = new Manager<State, Trigger>({
 
 // Configure our state tree:
 //  Root (the root state)
-//  |-- WelcomeSplash (a splash screen welcoming the player)
+//  |-- MadeForSplash
+//  |-- TitleSplash
 //  |-- MainMenu (the main menu state)
 //      |-- Environment (the gameplay state; this has been imported above)
 //      |   |-- Sector0
@@ -58,10 +62,13 @@ export const manager = new Manager<State, Trigger>({
 //      |-- GameComplete
 //
 const root = new State('Root');
-const welcomeSplash = new Splash('WelcomeSplash', 'MadeForCoopJam.png');
-const gameComplete = new Splash('GameComplete', 'GameComplete.png');
+const titleSplash = new Splash(
+	'TitleSplash', 'SplashWelcome.jpg', config.splashes.titleTimeout);
+const madeForSplash = new Splash(
+	'MadeForSplash', 'MadeForCoopJam.png', config.splashes.madeForTimeout);
+const gameCompleteSplash = new Splash('GameComplete', 'GameComplete.png');
 const mainMenu = new MainMenu('MainMenu');
-const environment = new Environment('Environment');
+const environment = new Environment('Environment', audio);
 
 
 // State transitions.
@@ -106,11 +113,24 @@ const returnToMainMenuOnPlayerDeath = {
 	exit: reset,
 	id: 'MainMenu',
 };
+const splashDone = {
+	trigger: Trigger.splashDone,
+	exit(old: Splash): void {
+		old.destroy();
+	},
+	async enter(next: Splash | MainMenu): Promise<void> {
+		await next.start();
+		next.attach();
+	},
+	rel: Relation.sibling,
+};
 
 
 /** The transitions available for sectors. */
 const sectorTransitions =
 	[advanceToNextSectorOnSuccess, returnToMainMenuOnPlayerDeath];
+/** The transitions available for splash screens. */
+const splashTransitions = [splashDone];
 
 
 /** Add sectors by specifying just an index. */
@@ -121,6 +141,12 @@ const addSector = (index: number): number => {
 		transitions: sectorTransitions,
 	});
 };
+
+
+const addSplash = (splash: Splash): number => manager.add(splash, {
+	alias: splash.name,
+	transitions: splashTransitions,
+});
 
 
 // Add all states to the tree.
@@ -143,11 +169,12 @@ manager.add(mainMenu, {
 manager.add(root, {
 	alias: root.name,
 	children: [
-		welcomeSplash,
+		addSplash(titleSplash),
+		addSplash(madeForSplash),
 		mainMenu.name,
-		gameComplete
+		addSplash(gameCompleteSplash),
 	],
 });
 
 
-manager.set(mainMenu.name);  // Set the initial state.
+manager.set(titleSplash.name);  // Set the initial state.

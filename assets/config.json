@@ -8,6 +8,10 @@
 		"AsteroidMassive",
 		"MoreAmmoNotice"
 	],
+	"splashes": {
+		"titleTimeout": 3000,
+		"madeForTimeout": 2000
+	},
 	"sectors": {
 		"from": 0,
 		"to": 4

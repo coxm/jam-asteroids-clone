@@ -6,6 +6,10 @@ declare module 'assets/config' {
 		readonly updateFrequencyHz: number;
 		readonly noticeDuration: number;
 		readonly actorDefs: string[];
+		readonly splashes: {
+			readonly titleTimeout: number;
+			readonly madeForTimeout: number;
+		};
 		readonly sectors: {
 			readonly from: number;
 			readonly to: number;

@@ -2,6 +2,7 @@ import {initKeyEvents} from 'jam/input/keyboard';
 
 import * as render from 'game/render';
 import * as states from 'game/states/index';
+import * as audio from 'game/audio/index';
 
 
 document.getElementById('container')!.appendChild(render.renderer.view);
@@ -15,3 +16,6 @@ states.resume(states.manager.current);
 
 // Start the render loop.
 render.loop.start();
+
+// Start the intro music.
+audio.manager.music.play();

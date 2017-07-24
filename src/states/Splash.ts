@@ -1,13 +1,18 @@
 import {State} from 'jam/states/State';
 
-import {stages} from 'game/render';
+import * as states from 'game/states/index';
+import {stages, camera} from 'game/render';
 import {textures} from 'game/load/index';
 
 
 export class Splash extends State {
 	private background: PIXI.Sprite | null = null;
 
-	constructor(name: string, readonly texturePath: string) {
+	constructor(
+		name: string,
+		readonly texturePath: string,
+		private readonly timeout?: number
+	) {
 		super(name);
 	}
 
@@ -17,6 +22,12 @@ export class Splash extends State {
 
 	protected doInit(texture: PIXI.Texture): void {
 		this.background = new PIXI.Sprite(texture);
+		this.background.position.set(camera.xmin, camera.ymin);
+		if (this.timeout !== undefined) {
+			setTimeout((): void => {
+				states.manager.trigger(states.Trigger.splashDone);
+			}, this.timeout);
+		}
 	}
 
 	protected doStart(texture: PIXI.Texture): void {

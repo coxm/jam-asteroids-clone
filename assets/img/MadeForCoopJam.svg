@@ -14,7 +14,7 @@
    id="svg2985"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="CoopJam.svg"
+   sodipodi:docname="MadeForCoopJam.svg"
    inkscape:export-xdpi="112.5"
    inkscape:export-ydpi="112.5">
   <defs
@@ -34,9 +34,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.79494274"
-     inkscape:cx="304.85561"
-     inkscape:cy="152.79739"
+     inkscape:zoom="1.5898855"
+     inkscape:cx="322.76525"
+     inkscape:cy="197.2113"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
      showgrid="false"
@@ -53,7 +53,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -62,12 +62,12 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer">
     <rect
-       style="fill:#ffce00;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       style="fill:#ffce00;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-opacity:1"
        id="rect4367"
-       width="641.64172"
-       height="480.09039"
-       x="1.5"
-       y="-1.5903931" />
+       width="640"
+       height="480"
+       x="0"
+       y="0" />
     <path
        style="fill:#5066d5;fill-opacity:1;stroke:#000000;stroke-width:1.29637814;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        d="m 584.5748,254.87124 -3.20723,28.30733 7.25113,30.399 -34.86123,0.27888 c 0,0 -17.9884,-1.95223 -7.66947,-10.31892 10.31892,-8.3667 23.56619,-5.02001 23.56619,-5.02001 0,0 -14.50228,1.11555 -14.08394,-19.10397 0.41833,-20.21951 8.3667,-29.28343 29.00455,-24.54231 z"

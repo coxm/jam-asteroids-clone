@@ -3,6 +3,7 @@ import * as events from 'game/events';
 import {Engine} from './Engine';
 import {Laser, LaserOptions} from './Laser';
 import {Exploder, ExploderOptions} from './Exploder';
+import {TrackList} from './TrackList';
 
 
 export interface ManagerOptions {
@@ -46,6 +47,7 @@ class EffectPool {
 
 
 export class Manager {
+	readonly music: TrackList;
 	private readonly eventsID: symbol = Symbol('Manager');
 	private merger: ChannelMergerNode | null = null;
 	private readonly master: GainNode;
@@ -76,6 +78,8 @@ export class Manager {
 		else {
 			this.shipIDs = [];
 		}
+
+		this.music = new TrackList('music');
 	}
 
 	get context(): AudioContext {
