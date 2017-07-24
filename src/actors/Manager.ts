@@ -6,6 +6,7 @@ import * as physics from 'game/physics';
 
 import {Actor, ActorDef, factory} from './index';
 import {InputDriver} from './components/InputDriver';
+import {PlayerHealth} from './components/Health';
 
 
 const {outerBorder, innerMargin} = config.render.viewport;
@@ -84,7 +85,8 @@ export class Manager {
 			if (!cmp.phys) {
 				continue;
 			}
-			const pos = cmp.phys.body.position;
+			const body = cmp.phys.body;
+			const pos = body.position;
 			if (!cmp.projectile) {  // Only projectiles get wrapped.
 				wrapPosition(pos);
 			}
@@ -92,9 +94,13 @@ export class Manager {
 				this.queueDelete(actor.id);  // Remove spent projectiles.
 			}
 			cmp.anim.renderable.position.set(pos[0], pos[1]);
-			cmp.anim.renderable.rotation = cmp.phys.body.angle;
+			cmp.anim.renderable.rotation = body.angle;
 			cmp.driver && (cmp.driver as InputDriver).update &&
 				(cmp.driver as InputDriver).update();
+			if ((cmp.health as PlayerHealth).renderable) {
+				(cmp.health as PlayerHealth).renderable.position.set(
+					body.position[0], body.position[1]);
+			}
 		}
 
 		for (let i = 0, len = this.toKill.length; i < len; ++i) {
@@ -157,6 +163,8 @@ export class Manager {
 
 		if (isPlayer(actor)) {
 			this.players.push(actor);
+			render.stages.main.addChild(
+				(actor.cmp.health as PlayerHealth).renderable);
 		}
 		return actor;
 	}
@@ -247,6 +255,8 @@ export class Manager {
 		if (playerIndex >= 0) {
 			this.players.splice(playerIndex, 1);
 			this.playerDied = true;
+			render.stages.main.removeChild(
+				(actor.cmp.health as PlayerHealth).renderable);
 		}
 
 		if (actor.cmp.phys) {

@@ -23,11 +23,12 @@
 			"AsteroidLarge.png",
 			"AsteroidMassive.png",
 			"Bullet.png",
-			"MoreAmmoNotice.png"
+			"MoreAmmoNotice.png",
+			"HealthBar.png"
 		]
 	},
 	"audio": {
-		"master": 0,
+		"master": 1,
 		"gunGain": 0.2,
 		"engineGain": 0.3,
 		"collisions": {

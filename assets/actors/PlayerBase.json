@@ -37,8 +37,8 @@
 			"maxRevThrust": 200
 		},
 		{
-			"factory": "health",
-			"hitpoints": 5
+			"factory": "playerHealth",
+			"hitpoints": 8
 		}
 	]
 }
