@@ -1,0 +1,24 @@
+{
+	"actors": [
+		{
+			"depends": "AsteroidMassive",
+			"position": [600, 600]
+		},
+		{
+			"depends": "AsteroidMassive",
+			"position": [-500, -500]
+		},
+		{
+			"depends": "AsteroidLarge",
+			"position": [1000, -500]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [1000, -200]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [880, -200]
+		}
+	]
+}

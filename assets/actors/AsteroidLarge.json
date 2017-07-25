@@ -32,7 +32,7 @@
 		},
 		{
 			"factory": "asteroidDriver",
-			"angularVelocity": 0.5,
+			"angularVelocity": 1.5,
 			"angle": 1.1239
 		},
 		{

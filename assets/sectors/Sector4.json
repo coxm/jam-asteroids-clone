@@ -5,8 +5,12 @@
 			"position": [600, 600]
 		},
 		{
-			"depends": "AsteroidMassive",
-			"position": [-300, -300]
+			"depends": "AsteroidLarge",
+			"position": [-1000, -1000]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [400, 400]
 		}
 	]
 }

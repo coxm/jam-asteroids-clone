@@ -2,19 +2,19 @@
 	"actors": [
 		{
 			"depends": "Asteroid",
-			"position": [0, 40]
+			"position": [0, 400]
 		},
 		{
 			"depends": "Asteroid",
-			"position": [0, -40]
+			"position": [0, -400]
 		},
 		{
 			"depends": "Asteroid",
-			"position": [20, 80]
+			"position": [200, 800]
 		},
 		{
 			"depends": "Asteroid",
-			"position": [-20, -80]
+			"position": [-200, -800]
 		}
 	]
 }

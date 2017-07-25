@@ -1,0 +1,44 @@
+{
+	"actors": [
+		{
+			"depends": "AsteroidMassive",
+			"position": [1200, 400]
+		},
+		{
+			"depends": "AsteroidMassive",
+			"position": [400, 1200]
+		},
+		{
+			"depends": "AsteroidMassive",
+			"position": [300, 1800]
+		},
+		{
+			"depends": "AsteroidLarge",
+			"position": [200, -500]
+		},
+		{
+			"depends": "AsteroidLarge",
+			"position": [1000, -200]
+		},
+		{
+			"depends": "AsteroidLarge",
+			"position": [-1200, -200]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [1000, -200]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [1000, -200]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [1000, -200]
+		},
+		{
+			"depends": "Asteroid",
+			"position": [880, -200]
+		}
+	]
+}

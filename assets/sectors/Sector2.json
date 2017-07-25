@@ -2,11 +2,11 @@
 	"actors": [
 		{
 			"depends": "AsteroidLarge",
-			"position": [100, 100]
+			"position": [400, 1000]
 		},
 		{
 			"depends": "AsteroidLarge",
-			"position": [-100, -100]
+			"position": [-1000, -1000]
 		}
 	]
 }

@@ -12,11 +12,11 @@
 	"splashes": {
 		"titleTimeout": 2000,
 		"madeForTimeout": 2000,
-		"gameOverTimeout": 3000
+		"gameOverTimeout": 5000
 	},
 	"sectors": {
-		"from": 0,
-		"to": 4
+		"from": 6,
+		"to": 6
 	},
 	"render": {
 		"viewport": {

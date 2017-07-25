@@ -2,7 +2,7 @@
 	"actors": [
 		{
 			"depends": "Asteroid",
-			"position": [100, 100]
+			"position": [-400, 400]
 		}
 	]
 }
