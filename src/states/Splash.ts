@@ -1,7 +1,7 @@
 import {State} from 'jam/states/State';
 
 import * as states from 'game/states/index';
-import {stages} from 'game/render';
+import {stages} from 'game/render/index';
 import {textures} from 'game/load/index';
 
 

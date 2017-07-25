@@ -1,6 +1,7 @@
 {
 	"updateFrequencyHz": 0.03333333333333333,
 	"noticeDuration": 650,
+	"smallAsteroidAmmoBonus": 8,
 	"actorDefs": [
 		"Bullet",
 		"Asteroid",
@@ -27,9 +28,24 @@
 			"AsteroidLarge.png",
 			"AsteroidMassive.png",
 			"Bullet.png",
-			"MoreAmmoNotice.png",
+			"AmmoSymbol.png",
 			"HealthBar.png"
-		]
+		],
+		"hud": {
+			"score": {
+				"position": [320, 430],
+				"anchor": [0.5, 0]
+			},
+			"ammo": {
+				"padding": 10,
+				"positions": {
+					"Player0": [10, 10],
+					"Player1": [530, 10],
+					"Player2": [10, 430],
+					"Player3": [530, 430]
+				}
+			}
+		}
 	},
 	"audio": {
 		"master": 0,

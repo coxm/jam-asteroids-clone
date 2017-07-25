@@ -4,6 +4,8 @@
 			"factory": "gun",
 			"offset": [0, 0],
 			"reloadTime": 100,
+			"maxAmmo": 200,
+			"initialAmmo": 20,
 			"projectileName": "Bullet"
 		}
 	]

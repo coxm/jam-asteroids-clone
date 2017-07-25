@@ -3,7 +3,7 @@ import {State} from 'jam/states/State';
 import config from 'assets/config';
 import * as settings from 'game/settings';
 
-import * as render from 'game/render';
+import * as render from 'game/render/index';
 import * as events from 'game/events';
 import * as load from 'game/load/index';
 import * as physics from 'game/physics';
@@ -177,12 +177,17 @@ export class Environment extends State {
 				this.addActorToStage(actor, render.stages[stage]);
 			}
 		}
-		else if (isAsteroid(actor)) {  // Small asteroid.
+		else if (isAsteroid(actor)) {  // Small asteroids only (no exploder).
 			this.actors.createNotice(
 				this.actorDefs.MoreAmmoNotice,
 				actor.cmp.phys.body.position,
 				config.noticeDuration
 			);
+			const bonus: number = Math.floor(
+				config.smallAsteroidAmmoBonus / settings.players.size);
+			for (let [actorID, counter] of render.ammo.counters) {
+				counter.value = this.actors.at(actorID).cmp.gun.addAmmo(bonus);
+			}
 		}
 	}
 
@@ -191,6 +196,7 @@ export class Environment extends State {
 		const projectile: Actor = this.actors.createProjectile(
 			this.actorDefs[ev.data.projectileName], ev.data);
 		this.addActorToStage(projectile, render.stages.lower);
+		--render.ammo.at(ev.data.actorID).value;
 	}
 
 	private addActorToStage(actor: Actor, stage: PIXI.Container): void {

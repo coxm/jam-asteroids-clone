@@ -2,6 +2,13 @@ import {Camera} from 'jam/render/Camera';
 import {loop as renderLoop, RenderLoop} from 'jam/render/loop';
 export {RenderLoop} from 'jam/render/loop';
 
+import config from 'assets/config';
+
+import {textures} from 'game/load/index';
+
+import {AmmoCounter} from './AmmoCounter';
+import {Score} from './Score';
+
 
 export type Renderer = PIXI.CanvasRenderer | PIXI.WebGLRenderer;
 
@@ -53,24 +60,31 @@ stages.space.addChild(stages.main);
 stages.space.addChild(stages.notices);
 
 
-let scoreValue: number = 0;
-const scoreDisplay = new PIXI.Text('Score: 0');
-scoreDisplay.position.set(500, 420);
-stages.hud.addChild(scoreDisplay);
+export const score = new Score(config.render.hud.score);
+stages.hud.addChild(score.display);
 
 
-export const score = {
-	get display() {
-		return scoreDisplay;
-	},
-	get value(): number {
-		return scoreValue;
-	},
-	set value(val: number) {
-		if (scoreValue !== val) {
-			scoreValue = val;
-			scoreDisplay.text = 'Score: ' + val;
+export const ammo = {
+	counters: new Map<symbol, AmmoCounter>(),
+	create(actorID: symbol, alias: string, initialAmmo: number): AmmoCounter {
+		if (this.counters.has(actorID)) {
+			throw new Error("AmmoCounter exists");
 		}
+		const {positions, padding} = config.render.hud.ammo;
+		const counter = new AmmoCounter(
+			textures.cached('AmmoSymbol.png'), padding, initialAmmo);
+		const pos = positions[alias];
+		counter.renderable.position.set(pos[0], pos[1]);
+		stages.hud.addChild(counter.renderable);
+		this.counters.set(actorID, counter);
+		return counter;
+	},
+	at(actorID: symbol): AmmoCounter {
+		const counter = this.counters.get(actorID);
+		if (counter) {
+			return counter;
+		}
+		throw new Error("No such counter");
 	},
 };
 

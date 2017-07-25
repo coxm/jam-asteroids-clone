@@ -2,7 +2,7 @@ import {initKeyEvents} from 'jam/input/keyboard';
 
 import config from 'assets/config';
 
-import * as render from 'game/render';
+import * as render from 'game/render/index';
 import * as states from 'game/states/index';
 import * as audio from 'game/audio/index';
 

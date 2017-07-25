@@ -1,7 +1,6 @@
 import config from 'assets/config';
 
-import {camera} from 'game/render';
-import * as render from 'game/render';
+import * as render from 'game/render/index';
 import * as physics from 'game/physics';
 
 import {Actor, ActorDef, factory} from './index';
@@ -18,10 +17,10 @@ const {outerBorder, innerMargin} = config.render.viewport;
  * Ensures objects flying off the screen reappear on the opposite side.
  */
 const wrapPosition = (pos: AnyVec2): void => {
-	const xminHard = camera.xmin - outerBorder[0];
-	const xmaxHard = camera.xmax + outerBorder[0];
-	const yminHard = camera.ymin - outerBorder[1];
-	const ymaxHard = camera.ymax + outerBorder[1];
+	const xminHard = render.camera.xmin - outerBorder[0];
+	const xmaxHard = render.camera.xmax + outerBorder[0];
+	const yminHard = render.camera.ymin - outerBorder[1];
+	const ymaxHard = render.camera.ymax + outerBorder[1];
 	if (pos[0] < xminHard) {
 		pos[0] = xmaxHard - innerMargin[0];
 	}
@@ -90,7 +89,7 @@ export class Manager {
 			if (!cmp.projectile) {  // Only projectiles get wrapped.
 				wrapPosition(pos);
 			}
-			else if (!camera.inRange(pos[0], pos[1])) {
+			else if (!render.camera.inRange(pos[0], pos[1])) {
 				this.queueDelete(actor.id);  // Remove spent projectiles.
 			}
 			cmp.anim.renderable.position.set(pos[0], pos[1]);
@@ -167,6 +166,8 @@ export class Manager {
 			this.players.push(actor);
 			render.stages.lower.addChild(
 				(actor.cmp.health as PlayerHealth).renderable);
+			render.ammo.create(
+				actor.id, actor.alias!, actor.cmp.gun.ammo);
 		}
 		return actor;
 	}
