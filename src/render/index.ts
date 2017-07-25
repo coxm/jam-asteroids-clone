@@ -93,6 +93,18 @@ export const camera = new Camera(viewportWidth, viewportHeight, stages.space);
 camera.moveTo(0, 0);
 
 
+export const reset = (): void => {
+	stages.lower.removeChildren();
+	stages.main.removeChildren();
+	stages.notices.removeChildren();
+	camera.moveTo(0, 0);
+	for (let counter of ammo.counters.values()) {
+		stages.hud.removeChild(counter.renderable);
+	}
+	ammo.counters.clear();
+};
+
+
 export const renderOnce = (): void => {
 	renderer.render(rootStage);
 };

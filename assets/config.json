@@ -10,8 +10,9 @@
 		"MoreAmmoNotice"
 	],
 	"splashes": {
-		"titleTimeout": 200,
-		"madeForTimeout": 200
+		"titleTimeout": 2000,
+		"madeForTimeout": 2000,
+		"gameOverTimeout": 3000
 	},
 	"sectors": {
 		"from": 0,

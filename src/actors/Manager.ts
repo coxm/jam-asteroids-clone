@@ -68,14 +68,22 @@ export enum UpdateResult {
 export class Manager {
 	private readonly byID = new Map<symbol, Actor>();
 	private readonly byAlias = new Map<string, Actor>();
-	private readonly bodyOwners = new WeakMap<p2.Body, Actor>();
+	private bodyOwners = new WeakMap<p2.Body, Actor>();
 	private readonly players: Actor[] = [];
 	private readonly toKill: symbol[] = [];
 	private playerDied: boolean = false;
 
 	/** Reset this actor manager. */
 	deinit(): void {
-		this.constructor.call(this);
+		this.byAlias.clear();
+		for (let actor of this.byID.values()) {
+			this.doDelete(actor);
+		}
+		this.byID.clear();
+		this.bodyOwners = new WeakMap<p2.Body, Actor>();
+		this.players.length = 0;
+		this.toKill.length = 0;
+		this.playerDied = false;
 	}
 
 	update(): UpdateResult {
@@ -105,7 +113,10 @@ export class Manager {
 		}
 
 		for (let i = 0, len = this.toKill.length; i < len; ++i) {
-			this.doDelete(this.toKill[i]);
+			const actor = this.byID.get(this.toKill[i]);
+			if (actor) {
+				this.doDelete(actor);
+			}
 		}
 		this.toKill.length = 0;
 
@@ -249,11 +260,7 @@ export class Manager {
 		}, duration);
 	}
 
-	private doDelete(id: symbol): void {
-		const actor = this.byID.get(id);
-		if (!actor) {
-			return;
-		}
+	private doDelete(actor: Actor): void {
 		const playerIndex = this.players.indexOf(actor);
 		if (playerIndex >= 0) {
 			this.players.splice(playerIndex, 1);

@@ -61,7 +61,7 @@ export class Environment extends State {
 		physics.world.step(config.updateFrequencyHz);
 		const result = this.actors.update();
 		if (result === UpdateResult.failure) {
-			this.pause();
+			this.stop();
 			states.manager.trigger(states.Trigger.playerDied);
 		}
 		else if (result === UpdateResult.success && this.sector !== null) {
@@ -95,7 +95,9 @@ export class Environment extends State {
 		);
 	}
 	protected doDeinit(): void {
-		Environment.call(this, this.name);
+		this.actors.deinit();
+		this.updateLoopID = 0;
+		this.sector = null;
 	}
 
 	// Pause/unpause.
@@ -110,6 +112,7 @@ export class Environment extends State {
 	protected doStop(): void {
 		clearInterval(this.updateLoopID);
 		this.updateLoopID = 0;
+		render.reset();
 	}
 
 	// Attach/detach.

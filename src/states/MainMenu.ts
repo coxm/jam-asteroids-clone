@@ -96,6 +96,7 @@ export class MainMenu extends State {
 	protected doAttach(): void {
 		document.querySelector('canvas')!.classList.add('hidden');
 		this.element!.classList.remove('hidden');
+		document.getElementById('container')!.appendChild(this.element!);
 	}
 
 	protected doDetach(): void {

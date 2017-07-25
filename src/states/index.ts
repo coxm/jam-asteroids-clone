@@ -1,4 +1,4 @@
-import {State, reset} from 'jam/states/State';
+import {State} from 'jam/states/State';
 export {resume} from 'jam/states/State';
 import {Relation} from 'jam/states/Relation';
 import {Manager, TriggerEvent} from 'jam/states/Manager';
@@ -66,7 +66,10 @@ const titleSplash = new Splash(
 	'TitleSplash', 'SplashWelcome.jpg', config.splashes.titleTimeout);
 const madeForSplash = new Splash(
 	'MadeForSplash', 'MadeForCoopJam.png', config.splashes.madeForTimeout);
-const gameCompleteSplash = new Splash('GameComplete', 'GameComplete.png');
+const gameCompleteSplash = new Splash(
+	'GameComplete', 'SplashGameComplete.png');
+const gameOverSplash = new Splash(
+	'GameOver', 'SplashGameOver.jpg', config.splashes.gameOverTimeout);
 const mainMenu = new MainMenu('MainMenu');
 const environment = new Environment('Environment', audio);
 
@@ -76,6 +79,7 @@ const initEnvironmentAndPlayGame = {
 	trigger: Trigger.playGame,
 	exit(mainMenu: MainMenu): void {
 		mainMenu.detach();
+		mainMenu.deinit();
 	},
 	async enter(env: Environment, trigger: Trigger, mgr: typeof manager) {
 		env.deinit();  // Reset in case we already played.
@@ -103,20 +107,30 @@ const advanceToNextSectorOnSuccess = {
 			environment.enterSector(nextState);
 		}
 		else {
-			throw new Error("Reached a splash screen");
+			environment.stop();
+			await nextState.start();
+			nextState.attach();
 		}
 	},
 	rel: Relation.sibling,
 };
-const returnToMainMenuOnPlayerDeath = {
+const gameOverOnPlayerDied = {
 	trigger: Trigger.playerDied,
-	exit: reset,
-	id: 'MainMenu',
+	exit(sector: Sector): void {
+		sector.stop();
+		environment.stop();
+	},
+	async enter(gameOver: Splash): Promise<void> {
+		await gameOver.start();
+		gameOver.attach();
+	},
+	id: gameOverSplash.name,
 };
 const splashDone = {
 	trigger: Trigger.splashDone,
 	exit(old: Splash): void {
-		old.destroy();
+		old.stop();
+		old.detach();
 	},
 	async enter(next: Splash | MainMenu): Promise<void> {
 		await next.start();
@@ -128,11 +142,7 @@ const splashDone = {
 
 /** The transitions available for sectors. */
 const sectorTransitions =
-	[advanceToNextSectorOnSuccess, returnToMainMenuOnPlayerDeath];
-/** The transitions available for splash screens. */
-const splashTransitions = [splashDone];
-
-
+	[advanceToNextSectorOnSuccess, gameOverOnPlayerDied];
 /** Add sectors by specifying just an index. */
 const addSector = (index: number): number => {
 	const name = 'Sector' + index;
@@ -143,6 +153,9 @@ const addSector = (index: number): number => {
 };
 
 
+/** The transitions available for splash screens. */
+const splashTransitions = [splashDone];
+/** Add a splash screen state. */
 const addSplash = (splash: Splash): number => manager.add(splash, {
 	alias: splash.name,
 	transitions: splashTransitions,
@@ -169,6 +182,7 @@ manager.add(mainMenu, {
 manager.add(root, {
 	alias: root.name,
 	children: [
+		addSplash(gameOverSplash),
 		addSplash(titleSplash),
 		addSplash(madeForSplash),
 		mainMenu.name,

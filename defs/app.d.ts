@@ -10,6 +10,7 @@ declare module 'assets/config' {
 		readonly splashes: {
 			readonly titleTimeout: number;
 			readonly madeForTimeout: number;
+			readonly gameOverTimeout: number;
 		};
 		readonly sectors: {
 			readonly from: number;
