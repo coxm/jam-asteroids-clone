@@ -3,8 +3,13 @@ export class AmmoCounter {
 	private readonly text: PIXI.Text;
 	private readonly sprite: PIXI.Sprite;
 
-	constructor(image: PIXI.Texture, padding: number, private count: number) {
-		this.text = new PIXI.Text(count as any as string);
+	constructor(
+		image: PIXI.Texture,
+		padding: number,
+		style: PIXI.TextStyleOptions,
+		private count: number
+	) {
+		this.text = new PIXI.Text(count as any as string, style);
 		this.sprite = new PIXI.Sprite(image);
 		this.text.position.x = padding + this.sprite.width;
 		this.renderable = new PIXI.Container();

@@ -36,6 +36,7 @@ export class Environment extends State {
 	private updateLoopID: number = 0;
 	private readonly eventsBatchID: symbol;
 	private sector: Sector | null = null;
+	private background: PIXI.Sprite | null = null;
 
 	constructor(name: string, private readonly audio: AudioManager) {
 		super(name);
@@ -93,6 +94,8 @@ export class Environment extends State {
 		this.audio.init(
 			[...settings.players].map(alias => this.actors.at(alias).id)
 		);
+		this.background = new PIXI.Sprite(
+			load.textures.cached('Background.png'));
 	}
 	protected doDeinit(): void {
 		this.actors.deinit();
@@ -122,10 +125,12 @@ export class Environment extends State {
 			{id: this.eventsBatchID, context: this}
 		);
 		this.audio.attach(events.manager);
+		render.stages.background.addChild(this.background!);
 	}
 	protected doDetach(): void {
 		this.audio.detach(events.manager);
 		events.manager.unbatch(this.eventsBatchID);
+		render.stages.background.removeChild(this.background!);
 	}
 
 	// Event handling.

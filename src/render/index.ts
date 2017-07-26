@@ -20,7 +20,6 @@ export const renderer: Renderer = PIXI.autoDetectRenderer(
 	viewportWidth,
 	viewportHeight,
 	{
-		backgroundColor: 0x333333,
 		antialias: true,
 	}
 );
@@ -30,6 +29,7 @@ export const renderer: Renderer = PIXI.autoDetectRenderer(
  * The render stage tree.
  *
  * rootStage
+ *  |-- background (not focused by the camera; used for background images)
  *  |-- space (contains most stuff in the game; gets manipulated by the camera)
  *  |    |-- lower (bullets & shields; these are rendered at the bottom)
  *  |    |-- main (ships and asteroids)
@@ -44,6 +44,7 @@ export const stages: {
 	readonly main: PIXI.Container;
 	readonly notices: PIXI.Container;
 } = {
+	background: new PIXI.Container(),
 	hud: new PIXI.Container(),
 	space: new PIXI.Container(),
 	lower: new PIXI.Container(),
@@ -53,6 +54,7 @@ export const stages: {
 
 
 export const rootStage = new PIXI.Container();
+rootStage.addChild(stages.background);
 rootStage.addChild(stages.space);
 rootStage.addChild(stages.hud);
 stages.space.addChild(stages.lower);
@@ -60,7 +62,7 @@ stages.space.addChild(stages.main);
 stages.space.addChild(stages.notices);
 
 
-export const score = new Score(config.render.hud.score);
+export const score = new Score(config.render.hud.score, config.text);
 stages.hud.addChild(score.display);
 
 
@@ -72,7 +74,11 @@ export const ammo = {
 		}
 		const {positions, padding} = config.render.hud.ammo;
 		const counter = new AmmoCounter(
-			textures.cached('AmmoSymbol.png'), padding, initialAmmo);
+			textures.cached('AmmoSymbol.png'),
+			padding,
+			config.text,
+			initialAmmo
+		);
 		const pos = positions[alias];
 		counter.renderable.position.set(pos[0], pos[1]);
 		stages.hud.addChild(counter.renderable);

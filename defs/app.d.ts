@@ -6,6 +6,7 @@ declare module 'assets/config' {
 		readonly updateFrequencyHz: number;
 		readonly noticeDuration: number;
 		readonly smallAsteroidAmmoBonuses: number[];
+		readonly text: PIXI.TextStyleOptions;
 		readonly actorDefs: string[];
 		readonly asteroidSpeed: {
 			readonly base: number;

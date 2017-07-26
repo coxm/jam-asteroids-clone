@@ -7,8 +7,12 @@ export interface ScoreOptions {
 export class Score {
 	readonly display: PIXI.Text;
 
-	constructor(options: ScoreOptions, private val: number = 0) {
-		this.display = new PIXI.Text(`Score: ${val}`);
+	constructor(
+		options: ScoreOptions,
+		style?: PIXI.TextStyleOptions,
+		private val: number = 0
+	) {
+		this.display = new PIXI.Text(`Score: ${val}`, style);
 		this.display.position.set(options.position[0], options.position[1]);
 		this.display.anchor.set(options.anchor[0], options.anchor[1]);
 	}

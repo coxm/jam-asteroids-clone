@@ -6,6 +6,9 @@
 		"base": 100,
 		"variance": 25
 	},
+	"text": {
+		"fill": "#ccc"
+	},
 	"actorDefs": [
 		"Bullet",
 		"Asteroid",
@@ -28,6 +31,7 @@
 			"innerMargin": [10, 10]
 		},
 		"textures": [
+			"Background.png",
 			"Spaceship.png",
 			"Asteroid.png",
 			"AsteroidLarge.png",
