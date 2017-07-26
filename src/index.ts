@@ -21,5 +21,5 @@ render.loop.start();
 
 // Start the intro music.
 if (config.audio.master! > 0) {
-	audio.manager.music.play();
+	audio.manager.music.gameplay.play();
 }

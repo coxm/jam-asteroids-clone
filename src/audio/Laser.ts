@@ -66,6 +66,10 @@ export class Laser {
 		return sleep(time);
 	}
 
+	stop(): void {
+		this.gainNode.gain.value = 0;
+	}
+
 	connect<T extends AudioNode>(
 		node: T,
 		outChannel?: number,

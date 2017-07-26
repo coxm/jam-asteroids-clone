@@ -21,11 +21,11 @@ export class TrackList {
 		}
 		const tracks = this.container.querySelectorAll('audio');
 		if (tracks.length > 0) {
-			this.reset(loop);
+			this.init(loop);
 		}
 	}
 
-	reset(loop?: boolean): void {
+	init(loop?: boolean): void {
 		this.doReset(this.container.querySelectorAll('audio'), loop);
 	}
 
@@ -45,6 +45,12 @@ export class TrackList {
 
 	pause(): void {
 		this.current().pause();
+	}
+
+	reset(): void {
+		const elem = this.current();
+		elem.pause();
+		elem.currentTime = 0;
 	}
 
 	private doReset(

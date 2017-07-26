@@ -12,7 +12,7 @@ export class Splash extends State {
 	constructor(
 		name: string,
 		readonly texturePath: string,
-		private readonly timeout?: number
+		private readonly timeout: number = 0
 	) {
 		super(name);
 	}
@@ -27,10 +27,8 @@ export class Splash extends State {
 
 	protected doStart(texture: PIXI.Texture): void {
 		stages.hud.addChild(this.background!);
-		if (this.timeout !== undefined) {
-			console.log('Setting timeout for', this.name, this.timeout);
+		if (this.timeout) {
 			this.timeoutID = setTimeout((): void => {
-				console.log('Splash', this.name, 'timed out');
 				states.manager.trigger(states.Trigger.splashDone);
 			}, this.timeout);
 		}

@@ -64,9 +64,10 @@ const createPlayerButton = (
 
 
 export class MainMenu extends State {
-	private element: HTMLElement | null = null;
+	private element: HTMLElement;
 
-	protected doInit(): void {
+	constructor(name: string) {
+		super(name);
 		const template =
 			document.getElementById('main-menu-tpl') as HTMLTemplateElement;
 		this.element = (
@@ -78,7 +79,7 @@ export class MainMenu extends State {
 		const tpl = document.getElementById('player-toggle-tpl') as
 			HTMLTemplateElement;
 		const rows = this.element.querySelectorAll('.player-toggles');
-		rows[0].appendChild(createPlayerButton(tpl, 0, 'WASDX'));
+		rows[0].appendChild(createPlayerButton(tpl, 0, 'WASDV'));
 		rows[0].appendChild(
 			createPlayerButton(tpl, 1, ['K', 'H', 'J', 'L', 'Space']))
 
@@ -89,19 +90,26 @@ export class MainMenu extends State {
 		rows[1].appendChild(arrowsBtn);
 		rows[1].appendChild(
 			createPlayerButton(tpl, 3, ['N8', 'N4', 'N2', 'N6', 'N0']));
-		document.getElementById('container')!.appendChild(this.element!);
+		document.getElementById('container')!.appendChild(this.element);
 		document.getElementById('play')!.addEventListener('click', onPlay);
+	}
+
+	protected doInit(): void {
+		const buttons = this.element.querySelectorAll('button');
+		for (let i = 0, len = buttons.length; i < len; ++i) {
+			buttons[i].classList.remove('on');
+		}
 	}
 
 	protected doAttach(): void {
 		document.querySelector('canvas')!.classList.add('hidden');
-		this.element!.classList.remove('hidden');
-		document.getElementById('container')!.appendChild(this.element!);
+		this.element.classList.remove('hidden');
+		document.getElementById('container')!.appendChild(this.element);
 	}
 
 	protected doDetach(): void {
-		this.element!.classList.add('hidden');
-		document.getElementById('container')!.removeChild(this.element!);
+		this.element.classList.add('hidden');
+		document.getElementById('container')!.removeChild(this.element);
 		document.querySelector('canvas')!.classList.remove('hidden');
 	}
 }

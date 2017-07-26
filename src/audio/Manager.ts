@@ -47,7 +47,11 @@ class EffectPool {
 
 
 export class Manager {
-	readonly music: TrackList;
+	readonly music: {
+		readonly gameplay: TrackList;
+		readonly failure: TrackList;
+		readonly success: TrackList;
+	};
 	private readonly eventsID: symbol = Symbol('Manager');
 	private merger: ChannelMergerNode | null = null;
 	private readonly master: GainNode;
@@ -73,17 +77,31 @@ export class Manager {
 			() => new Laser(context, this.options!.laserHits!)
 		);
 		if (this.options.shipIDs) {
-			this.doReset(this.options.shipIDs);
+			this.doInit(this.options.shipIDs);
 		}
 		else {
 			this.shipIDs = [];
 		}
 
-		this.music = new TrackList('music');
+		this.music = {
+			gameplay: new TrackList('music-gameplay'),
+			success: new TrackList('music-success'),
+			failure: new TrackList('music-failure'),
+		};
 	}
 
 	get context(): AudioContext {
 		return this.master.context;
+	}
+
+	reset(): void {
+		this.shipIDs = [];
+		for (let engine of this.engines) {
+			engine.stop();
+		}
+		for (let cannon of this.cannons) {
+			cannon.stop();
+		}
 	}
 
 	init(shipIDs: symbol[]): void {
@@ -91,7 +109,8 @@ export class Manager {
 		if (this.merger) {
 			this.merger.disconnect();
 		}
-		this.doReset(shipIDs);
+		this.doInit(shipIDs);
+		this.master.connect(this.context.destination);
 	}
 
 	attach(manager: events.Manager): void {
@@ -139,7 +158,7 @@ export class Manager {
 		this.laserHits.play(this.master);
 	}
 
-	private doReset(shipIDs: symbol[]): void {
+	private doInit(shipIDs: symbol[]): void {
 		const numActors = shipIDs.length;
 		const numAudioNodes = numActors * 2;
 		const context = this.context;

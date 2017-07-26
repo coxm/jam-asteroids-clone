@@ -52,8 +52,9 @@ export const manager = new Manager<State, Trigger>({
 
 // Configure our state tree:
 //  Root (the root state)
+//  |-- GameOverSplash (only seen if a player dies)
+//  |-- TitleSplash (the starting state)
 //  |-- MadeForSplash
-//  |-- TitleSplash
 //  |-- MainMenu (the main menu state)
 //      |-- Environment (the gameplay state; this has been imported above)
 //      |   |-- Sector0
@@ -68,10 +69,19 @@ const madeForSplash = new Splash(
 	'MadeForSplash', 'MadeForCoopJam.png', config.splashes.madeForTimeout);
 const gameCompleteSplash = new Splash(
 	'GameComplete', 'SplashGameComplete.png');
-const gameOverSplash = new Splash(
-	'GameOver', 'SplashGameOver.jpg', config.splashes.gameOverTimeout);
+const gameOverSplash = new Splash('GameOver', 'SplashGameOver.jpg');
 const mainMenu = new MainMenu('MainMenu');
 const environment = new Environment('Environment', audio);
+
+
+/** Skip the current state if it's a splash screen. */
+const skipIfCurrentIsSplashScreen = (): void => {
+	if (manager.current instanceof Splash) {
+		manager.trigger(Trigger.splashDone);
+	}
+};
+document.body.addEventListener('click', skipIfCurrentIsSplashScreen);
+document.body.addEventListener('keydown', skipIfCurrentIsSplashScreen);
 
 
 // State transitions.
@@ -89,6 +99,7 @@ const initEnvironmentAndPlayGame = {
 	},
 	rel: Relation.child,  // The environment is the first child of MainMenu.
 };
+
 const startFirstSector = {
 	trigger: Trigger.startChild,
 	enter(sector: Sector): Promise<void> {
@@ -96,6 +107,7 @@ const startFirstSector = {
 	},
 	rel: Relation.child,  // The sectors are children of Environment.
 };
+
 const advanceToNextSectorOnSuccess = {
 	trigger: Trigger.sectorComplete,
 	exit(previous: Sector): void {
@@ -107,6 +119,7 @@ const advanceToNextSectorOnSuccess = {
 			environment.enterSector(nextState);
 		}
 		else {
+			audio.reset();
 			environment.stop();
 			await nextState.start();
 			nextState.attach();
@@ -114,27 +127,42 @@ const advanceToNextSectorOnSuccess = {
 	},
 	rel: Relation.sibling,
 };
+
 const gameOverOnPlayerDied = {
 	trigger: Trigger.playerDied,
 	exit(sector: Sector): void {
 		sector.stop();
 		environment.stop();
+		audio.music.gameplay.reset();
 	},
 	async enter(gameOver: Splash): Promise<void> {
 		await gameOver.start();
 		gameOver.attach();
+		audio.music.failure.play();
+		audio.reset();
 	},
 	id: gameOverSplash.name,
 };
+
 const splashDone = {
 	trigger: Trigger.splashDone,
 	exit(old: Splash): void {
 		old.stop();
 		old.detach();
+		if (old === gameCompleteSplash) {
+			audio.music.success.reset();
+		}
+		else if (old === gameOverSplash) {
+			audio.music.failure.reset();
+		}
 	},
 	async enter(next: Splash | MainMenu): Promise<void> {
 		await next.start();
 		next.attach();
+		if (next === titleSplash) {
+			audio.music.gameplay.reset();
+			audio.music.gameplay.play();
+		}
 	},
 	rel: Relation.sibling,
 };
@@ -186,7 +214,7 @@ manager.add(root, {
 		addSplash(titleSplash),
 		addSplash(madeForSplash),
 		mainMenu.name,
-		addSplash(gameCompleteSplash),
+		manager.add(gameCompleteSplash, {alias: gameCompleteSplash.name}),
 	],
 });
 

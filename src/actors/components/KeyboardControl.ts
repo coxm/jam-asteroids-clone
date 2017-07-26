@@ -21,7 +21,7 @@ const KEYDOWN_HANDLERS = {
 		[KeyCode.s, driver.down.bind(driver)],
 		[KeyCode.a, driver.left.bind(driver)],
 		[KeyCode.d, driver.right.bind(driver)],
-		[KeyCode.x, driver.shoot.bind(driver)],
+		[KeyCode.v, driver.shoot.bind(driver)],
 	],
 	hjkl: (driver: Driver): [KeyCode, () => void][] => [
 		[KeyCode.k, driver.up.bind(driver)],
