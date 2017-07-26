@@ -5,7 +5,7 @@ declare module 'assets/config' {
 	const config: {
 		readonly updateFrequencyHz: number;
 		readonly noticeDuration: number;
-		readonly smallAsteroidAmmoBonus: number;
+		readonly smallAsteroidAmmoBonuses: number[];
 		readonly actorDefs: string[];
 		readonly splashes: {
 			readonly titleTimeout: number;
