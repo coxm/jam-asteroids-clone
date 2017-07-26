@@ -3,7 +3,7 @@
 		{
 			"factory": "physics",
 			"type": "dynamic",
-			"mass": 1,
+			"mass": 2,
 			"damping": 0,
 			"angularDamping": 0,
 			"shapes": [
