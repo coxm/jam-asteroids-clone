@@ -7,6 +7,10 @@ declare module 'assets/config' {
 		readonly noticeDuration: number;
 		readonly smallAsteroidAmmoBonuses: number[];
 		readonly actorDefs: string[];
+		readonly asteroidSpeed: {
+			readonly base: number;
+			readonly variance: number;
+		};
 		readonly splashes: {
 			readonly titleTimeout: number;
 			readonly madeForTimeout: number;

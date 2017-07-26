@@ -44,7 +44,7 @@
 			"debris": "AsteroidLarge",
 			"offset": [0.5, 0],
 			"count": 4,
-			"speed": 80,
+			"speed": 120,
 			"stage": "main"
 		}
 	]

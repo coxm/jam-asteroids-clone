@@ -1,3 +1,5 @@
+import config from 'assets/config';
+
 import {Actor, ComponentDef, ComponentBase} from 'game/actors/index';
 
 
@@ -6,6 +8,14 @@ export interface AsteroidDriverDef extends ComponentDef {
 	readonly angularVelocity?: number;
 	readonly velocity?: Vec2;
 }
+
+
+const randSign = (): number => Math.sign(0.5 - Math.random());
+const randVelocityComponent = (): number =>
+	randSign() * (
+		config.asteroidSpeed.base +
+		Math.random() * config.asteroidSpeed.variance
+	);
 
 
 /** A component which propels the actor in a fixed, random direction. */
@@ -19,8 +29,8 @@ export class AsteroidDriver extends ComponentBase {
 		this.angle = def.angle || 0;
 		this.angularVelocity = def.angularVelocity || 0;
 		this.velocity = p2.vec2.clone(def.velocity || [
-			100 * Math.random(),
-			100 * Math.random()
+			randVelocityComponent(),
+			randVelocityComponent()
 		]);
 	}
 

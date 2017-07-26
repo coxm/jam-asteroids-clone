@@ -2,6 +2,10 @@
 	"updateFrequencyHz": 0.03333333333333333,
 	"noticeDuration": 650,
 	"smallAsteroidAmmoBonuses": [8, 6, 4, 3],
+	"asteroidSpeed": {
+		"base": 100,
+		"variance": 25
+	},
 	"actorDefs": [
 		"Bullet",
 		"Asteroid",
