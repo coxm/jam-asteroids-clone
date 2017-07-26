@@ -64,9 +64,9 @@
 					"gain": 0
 				},
 				{
-					"time": 0.001,
+					"time": 0.01,
 					"frequency": 300,
-					"gain": 2
+					"gain": 1
 				},
 				{
 					"time": 0.2,
@@ -81,7 +81,7 @@
 			]
 		},
 		"laserHits": {
-			"maxGain": 0.5,
+			"maxGain": 0.3,
 			"intervals": [
 				{
 					"time": 0,
@@ -91,12 +91,12 @@
 				{
 					"time": 0.001,
 					"frequency": 300,
-					"gain": 1
+					"gain": 0.4
 				},
 				{
-					"time": 0.2,
-					"frequency": 200,
-					"gain": 0.4
+					"time": 1.0,
+					"frequency": 250,
+					"gain": 0.3
 				},
 				{
 					"time": 0.4,
