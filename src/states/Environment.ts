@@ -187,7 +187,7 @@ export class Environment extends State {
 				config.noticeDuration
 			);
 			const bonus: number =
-				config.smallAsteroidAmmoBonuses[settings.players.size];
+				config.smallAsteroidAmmoBonuses[settings.players.size - 1];
 			for (let [actorID, counter] of render.ammo.counters) {
 				counter.value = this.actors.at(actorID).cmp.gun.addAmmo(bonus);
 			}
