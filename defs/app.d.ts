@@ -1,3 +1,12 @@
+declare const PRODUCTION: boolean;
+
+
+declare module 'asset-importer' {
+	const all: {readonly [key: string]: any;};
+	export = all;
+}
+
+
 declare module 'assets/config' {
 	import {ManagerOptions} from 'game/audio/Manager';
 

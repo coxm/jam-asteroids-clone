@@ -84,7 +84,7 @@
 
 
 .arrow-keys code {
-	background: url('/assets/img/Arrows.png');
+	background: url('/dist/img/Arrows.png');
 	display: inline-block;
 	top: 2px;
 	width: 16px;

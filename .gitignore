@@ -1,2 +1,6 @@
 /build/
-/assets/img/*.png
+/dist/*.html
+/dist/*.js
+/dist/*.css
+/dist/**/*.png
+/dist/**/*.json

@@ -9,10 +9,23 @@
 	<body>
 		<div id="container"></div>
 
-		<script type="text/javascript" src="node_modules/systemjs/dist/system.src.js"></script>
-		<script type="text/javascript" src="node_modules/pixi.js/dist/pixi.js"></script>
-		<script type="text/javascript" src="node_modules/p2/build/p2.js"></script>
-		<script type="text/javascript" src="config/system.js"></script>
+		<div id="music-gameplay">
+			<audio src="/dist/audio/SilexWan_Blank.ogg">
+				Your browser doesn't support the <code>audio</code> element, so
+				you're missing out on the
+				<a href="https://soundcloud.com/silexwan/sets/minild-74-selection/s-7XfBJ">sweet music</a>
+				Marwane made.
+			</audio>
+			<audio src="/dist/audio/SilexWan_Focus.ogg"></audio>
+		</div>
+
+		<div id="music-failure">
+			<audio src="/dist/audio/SilexWan_SoldiersLegacy.ogg"></audio>
+		</div>
+
+		<div id="music-success">
+			<audio src="/dist/audio/SilexWan_FlashingStars.ogg"></audio>
+		</div>
 
 		<template id="player-toggle-tpl">
 			<button type="button" class="toggle-player">
@@ -53,22 +66,21 @@
 			</div>
 		</template>
 
-		<div id="music-gameplay">
-			<audio src="/assets/audio/SilexWan_Blank.ogg">
-				Your browser doesn't support the <code>audio</code> element, so
-				you're missing out on the
-				<a href="https://soundcloud.com/silexwan/sets/minild-74-selection/s-7XfBJ">sweet music</a>
-				Marwane made.
-			</audio>
-			<audio src="/assets/audio/SilexWan_Focus.ogg"></audio>
-		</div>
-
-		<div id="music-failure">
-			<audio src="/assets/audio/SilexWan_SoldiersLegacy.ogg"></audio>
-		</div>
-
-		<div id="music-success">
-			<audio src="/assets/audio/SilexWan_FlashingStars.ogg"></audio>
-		</div>
+		<script type="text/javascript"
+				src="node_modules/systemjs/dist/system.src.js"
+				dist="system-production.js">
+		</script>
+		<script type="text/javascript"
+				src="node_modules/pixi.js/dist/pixi.js"
+				dist="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.4/pixi.min.js">
+		</script>
+		<script type="text/javascript"
+				src="node_modules/p2/build/p2.js"
+				dist="https://cdnjs.cloudflare.com/ajax/libs/p2.js/0.7.1/p2.min.js">
+		</script>
+		<script type="text/javascript"
+				src="config/system.js"
+				dist="game.js">
+		</script>
 	</body>
 </html>

@@ -84,7 +84,7 @@ export class Manager {
 		}
 
 		this.music = {
-			gameplay: new TrackList('music-gameplay'),
+			gameplay: new TrackList('music-gameplay', true),
 			success: new TrackList('music-success'),
 			failure: new TrackList('music-failure'),
 		};

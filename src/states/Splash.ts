@@ -30,7 +30,7 @@ export class Splash extends State {
 		if (this.timeout) {
 			this.timeoutID = setTimeout((): void => {
 				states.manager.trigger(states.Trigger.splashDone);
-			}, this.timeout);
+			}, this.timeout) as any as number;
 		}
 	}
 

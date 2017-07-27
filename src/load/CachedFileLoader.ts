@@ -12,14 +12,16 @@ export class CachedFileLoader extends FileLoader {
 
 	/** Load a plaintext file. */
 	@cache
-	text(relpath: string): Promise<string> {
-		return super.text(relpath);
+	async text(relpath: string): Promise<string> {
+		return await fetch(this.abspath(relpath) + this.suffix).then(
+			res => res.text());
 	}
 
 	/** Load a JSON file. */
 	@cache
 	async json<T>(relpath: string): Promise<T> {
-		const obj: T = await super.json<T>(relpath);
+		const res = await fetch(this.abspath(relpath) + this.suffix)
+		const obj: any = await res.json();
 		(obj as any)[filename] = relpath;
 		return obj;
 	}

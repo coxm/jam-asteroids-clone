@@ -114,7 +114,7 @@ export class Environment extends State {
 			this.updateLoopID = setInterval(
 				(): void => this.update(),
 				config.updateFrequencyHz * 1000
-			);
+			) as any as number;
 		}
 	}
 	protected doStop(): void {

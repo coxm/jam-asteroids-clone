@@ -132,7 +132,7 @@ export class Engine {
 			this.setState(state);
 			++this.step;
 			this.doAccelerate();
-		}, state.time);
+		}, state.time) as any as number;
 	}
 
 	private doDecelerate(): void {
@@ -145,6 +145,6 @@ export class Engine {
 		this.timeoutID = setTimeout((): void => {
 			--this.step;
 			this.doDecelerate();
-		}, state.time);
+		}, state.time) as any as number;
 	}
 }

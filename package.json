@@ -12,6 +12,7 @@
     "test": "make test"
   },
   "dependencies": {
+    "cssmin": "^0.4.3",
     "jam": "github:coxm/jam-engine#v16.2.0",
     "p2": "^0.7.1",
     "pixi.js": "4.4.0",
@@ -23,9 +24,13 @@
     "@types/pixi.js": "^4.4.0",
     "@types/systemjs": "^0.19.31",
     "check-dependencies": "^1.0.1",
+    "cheerio": "^1.0.0-rc.2",
+    "html-minifier": "^3.5.3",
     "http-server": "^0.10.0",
+    "systemjs-builder": "^0.16.9",
     "typescript": "^2.4.0",
-    "typings": "^1.4.0"
+    "typings": "^1.4.0",
+    "uglify-es": "^3.0.26"
   },
   "author": "coxm",
   "license": "GPL-3.0"
