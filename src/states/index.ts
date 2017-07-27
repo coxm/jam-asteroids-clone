@@ -141,6 +141,8 @@ const gameCompleteOnLastSectorDone = {
 		await next.init();
 		next.attach();
 		await next.start();
+		audio.music.gameplay.reset();
+		audio.music.success.play();
 	},
 	id: gameCompleteSplash.name,
 };
@@ -191,6 +193,7 @@ const gameCompleteSplashDismissed = {
 	async enter(next: MainMenu): Promise<void> {
 		await next.start();
 		next.attach();
+		audio.music.gameplay.play();
 	},
 	id: mainMenu.name,
 };
