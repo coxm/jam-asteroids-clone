@@ -48,7 +48,7 @@ const createPlayerButton = (
 		['.header', `Player ${index}`],
 		['.up', controls[0]],
 		['.left', controls[1]],
-		['.down', controls[2]],
+		// ['.down', controls[2]],
 		['.right', controls[3]],
 		['.shoot', controls[4]],
 	]) {
