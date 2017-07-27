@@ -66,7 +66,12 @@ export class Environment extends State {
 			states.manager.trigger(states.Trigger.playerDied);
 		}
 		else if (result === UpdateResult.success && this.sector !== null) {
-			states.manager.trigger(states.Trigger.sectorComplete);
+			if (states.manager.tryNextSibling()) {  // More sectors exist.
+				states.manager.trigger(states.Trigger.sectorComplete);
+			}
+			else {  // The last sector is complete!
+				states.manager.trigger(states.Trigger.gameComplete);
+			}
 		}
 	}
 

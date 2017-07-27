@@ -22,6 +22,7 @@ import {Environment} from './Environment';
 export const enum Trigger {
 	playGame,
 	sectorComplete,
+	gameComplete,
 	playerDied,
 	startChild,
 	splashDone,
@@ -68,7 +69,7 @@ const titleSplash = new Splash(
 const madeForSplash = new Splash(
 	'MadeForSplash', 'MadeForCoopJam.png', config.splashes.madeForTimeout);
 const gameCompleteSplash = new Splash(
-	'GameComplete', 'SplashGameComplete.png');
+	'GameComplete', 'SplashGameComplete.jpg');
 const gameOverSplash = new Splash('GameOver', 'SplashGameOver.jpg');
 const mainMenu = new MainMenu('MainMenu');
 const environment = new Environment('Environment', audio);
@@ -128,6 +129,22 @@ const advanceToNextSectorOnSuccess = {
 	rel: Relation.sibling,
 };
 
+const gameCompleteOnLastSectorDone = {
+	trigger: Trigger.gameComplete,
+	exit(previous: Sector): void {
+		previous.stop();
+		previous.detach();
+		environment.stop();
+		environment.detach();
+	},
+	async enter(next: Splash): Promise<void> {
+		await next.init();
+		next.attach();
+		await next.start();
+	},
+	id: gameCompleteSplash.name,
+};
+
 const gameOverOnPlayerDied = {
 	trigger: Trigger.playerDied,
 	exit(sector: Sector): void {
@@ -149,10 +166,7 @@ const splashDone = {
 	exit(old: Splash): void {
 		old.stop();
 		old.detach();
-		if (old === gameCompleteSplash) {
-			audio.music.success.reset();
-		}
-		else if (old === gameOverSplash) {
+		if (old === gameOverSplash) {
 			audio.music.failure.reset();
 		}
 	},
@@ -167,10 +181,27 @@ const splashDone = {
 	rel: Relation.sibling,
 };
 
+const gameCompleteSplashDismissed = {
+	trigger: Trigger.splashDone,
+	exit(old: Splash): void {
+		old.stop();
+		old.detach();
+		audio.music.success.reset();
+	},
+	async enter(next: MainMenu): Promise<void> {
+		await next.start();
+		next.attach();
+	},
+	id: mainMenu.name,
+};
+
 
 /** The transitions available for sectors. */
-const sectorTransitions =
-	[advanceToNextSectorOnSuccess, gameOverOnPlayerDied];
+const sectorTransitions = [
+	advanceToNextSectorOnSuccess,
+	gameOverOnPlayerDied,
+	gameCompleteOnLastSectorDone,
+];
 /** Add sectors by specifying just an index. */
 const addSector = (index: number): number => {
 	const name = 'Sector' + index;
@@ -214,7 +245,10 @@ manager.add(root, {
 		addSplash(titleSplash),
 		addSplash(madeForSplash),
 		mainMenu.name,
-		manager.add(gameCompleteSplash, {alias: gameCompleteSplash.name}),
+		manager.add(gameCompleteSplash, {
+			alias: gameCompleteSplash.name,
+			transitions: [gameCompleteSplashDismissed],
+		}),
 	],
 });
 
