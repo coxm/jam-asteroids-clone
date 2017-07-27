@@ -29,6 +29,9 @@ export const enum Trigger {
 }
 
 
+let lastStateStartTime: number = Date.now();
+
+
 /**
  * The state manager.
  *
@@ -47,6 +50,7 @@ export const manager = new Manager<State, Trigger>({
 		console.log(
 			`[State postTrigger] ${ev.old.name} -> ${ev.new.name}. Event:`, ev
 		);
+		lastStateStartTime = Date.now();
 	},
 });
 
@@ -77,7 +81,10 @@ const environment = new Environment('Environment', audio);
 
 /** Skip the current state if it's a splash screen. */
 const skipIfCurrentIsSplashScreen = (): void => {
-	if (manager.current instanceof Splash) {
+	if (
+		(manager.current instanceof Splash) &&
+		Date.now() - lastStateStartTime > 2000
+	) {
 		manager.trigger(Trigger.splashDone);
 	}
 };
